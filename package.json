@@ -1,0 +1,34 @@
+{
+  "name": "extended-query-string",
+  "version": "1.0.0",
+  "description": "Parse and create extended query strings (like in Rails or the extended option in express)",
+  "keywords": [
+    "query-string",
+    "querystring",
+    "qs",
+    "query",
+    "url",
+    "parse"
+  ],
+  "homepage": "https://github.com/panzi/extended-query-string#readme",
+  "bugs": {
+    "url": "https://github.com/panzi/extended-query-string/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panzi/extended-query-string.git"
+  },
+  "license": "MIT",
+  "author": "Mathias Panzenböck",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "clean": "rm -rf build",
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

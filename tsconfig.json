@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "target": "es2024",
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "forceConsistentCasingInFileNames": true,
+      "pretty": true,
+      "sourceMap": true,
+      "outDir": "./build",
+      "rootDir": "./src",
+      "allowJs": false,
+      "noEmit": false,
+      "esModuleInterop": true,
+      "strictNullChecks": true,
+      "noImplicitThis": true,
+      "strictPropertyInitialization": true,
+      "useUnknownInCatchVariables": true,
+      "noUnusedLocals": true,
+      "alwaysStrict": true,
+      "declaration": true
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["node_modules"]
+}
