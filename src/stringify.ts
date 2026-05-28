@@ -1,11 +1,11 @@
 import { stringifyKey, _debugKey } from "./stringifyKey.js";
 import type { Query } from "./types.js";
 
-export function stringify(query: Readonly<Query>): string {
-    const visited = new WeakMap<object, string[]>();
-    const buf: string[] = [];
+export function stringify(query: Readonly<Query|ReadonlyMap<string, unknown>>): string {
+    const visited = new WeakMap<object, (string|null)[]>();
+    const buf: (string|null)[] = [];
 
-    function stringify(path: string[], value: unknown): void {
+    function stringify(path: (string|null)[], value: unknown): void {
         if (value && typeof value === 'object') {
             const otherKey = visited.get(value);
             if (otherKey !== undefined) {
@@ -15,14 +15,14 @@ export function stringify(query: Readonly<Query>): string {
             visited.set(value, path.slice());
 
             if (Array.isArray(value) || value instanceof Set) {
-                path.push('');
+                path.push(null);
                 for (const item of value) {
                     stringify(path, item);
                 }
                 path.pop();
             } else if (value instanceof Map) {
-                for (const key in value) {
-                    path.push(key);
+                for (const key of value.keys()) {
+                    path.push(String(key));
                     stringify(path, value.get(key));
                     path.pop();
                 }

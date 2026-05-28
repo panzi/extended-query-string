@@ -12,6 +12,9 @@ are:
 * Simpler code with zero dependencies.
 * Strict parsing that throws exceptions on syntax errors instead of doing
   unexpected things.
+* Uses `Object.create(null)` for parsed objects that really only have the
+  parsed properties. This would also prevent prototype pollution, though
+  `Object.hasOwn()` is used anyway.
 
 TODO
 ----

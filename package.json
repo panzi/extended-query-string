@@ -26,9 +26,27 @@
     "tsc": "tsc",
     "clean": "rm -rf build",
     "build": "tsc -p tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "devDependencies": {
+    "@jest/globals": "^30.4.1",
+    "@types/node": "^25.9.1",
+    "ts-jest": "^29.4.11",
     "typescript": "^6.0.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "resolver": "ts-jest-resolver",
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "./tests/tsconfig.json"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "ts-jest-resolver": "^2.0.1"
   }
 }

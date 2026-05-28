@@ -1,4 +1,4 @@
-export function parseKey(key: string): string[] {
+export function parseKey(key: string): (string|null)[] {
     let openIndex = key.indexOf('[');
     if (openIndex < 0) {
         const closeIndex = key.indexOf(']');
@@ -8,7 +8,7 @@ export function parseKey(key: string): string[] {
         return [key];
     }
 
-    const path: string[] = [key.slice(0, openIndex)];
+    const path: (string|null)[] = [key.slice(0, openIndex)];
 
     let closeIndex = -1;
 
@@ -30,7 +30,7 @@ export function parseKey(key: string): string[] {
             throw new SyntaxError(`Syntax error at index ${openIndex + 1 + index}: unexpected "[" (expected identifier character): ${JSON.stringify(key)}`);
         }
 
-        path.push(nextKey);
+        path.push(nextKey || null);
 
         openIndex = closeIndex + 1;
 
