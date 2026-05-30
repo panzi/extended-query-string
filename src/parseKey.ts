@@ -1,4 +1,9 @@
-export function parseKey(key: string): (string|null)[] {
+import type { ParsedKey } from "./types";
+
+/**
+ * @throws {SyntaxError}
+ */
+export function parseKey(key: string): ParsedKey {
     let openIndex = key.indexOf('[');
     if (openIndex < 0) {
         const closeIndex = key.indexOf(']');
@@ -8,7 +13,7 @@ export function parseKey(key: string): (string|null)[] {
         return [key];
     }
 
-    const path: (string|null)[] = [key.slice(0, openIndex)];
+    const path: ParsedKey = [key.slice(0, openIndex)];
 
     let closeIndex = -1;
 

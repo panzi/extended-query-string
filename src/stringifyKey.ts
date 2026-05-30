@@ -1,4 +1,6 @@
-export function stringifyKey(path: readonly (string|null)[]): string {
+import type { ParsedKey } from "./types";
+
+export function stringifyKey(path: Readonly<ParsedKey>): string {
     const buf = [path[0] ?? ''];
     for (let index = 1; index < path.length; ++index) {
         buf.push('[', path[index] ?? '', ']');
@@ -8,7 +10,7 @@ export function stringifyKey(path: readonly (string|null)[]): string {
 }
 
 /** @private */
-export function _debugKey(path: readonly (string|null)[]): string {
+export function _debugKey(path: Readonly<ParsedKey>): string {
     return path.length ? 'key ' + JSON.stringify(stringifyKey(path)) : 'top level';
 }
 

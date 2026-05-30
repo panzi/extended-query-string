@@ -1,39 +1,22 @@
+import { RedefinitionError, TypeConflict } from "./errors.js";
 import { parseKey } from "./parseKey.js";
-import stringifyKey, { _debugKey } from "./stringifyKey.js";
-import type { Query } from "./types.js";
+import { _debugKey } from "./stringifyKey.js";
+import { getTypeName, type ParsedKey, type Query } from "./types.js";
 
-function getTypeName(value: unknown): string {
-    if (value === null) {
-        return 'null';
-    }
-
-    if (Array.isArray(value)) {
-        return 'array';
-    }
-
-    const typeName = typeof value;
-
-    if (typeName === 'object') {
-        return 'mapping';
-    }
-
-    return typeName;
-}
-
-function _parseItem(query: Query, path: readonly (string|null)[], value: string, redefine: 'first' | 'last' | 'error'): void {
+function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'first' | 'last' | 'error'): void {
     let current: any = query;
     for (let keyIndex = 0; keyIndex < path.length - 1; ++ keyIndex) {
         const subKey = path[keyIndex];
 
         if (subKey === null) {
             if (!Array.isArray(current)) {
-                throw new TypeError(`Conflicting types at ${_debugKey(path.slice(0, keyIndex))}: expected array, got ${getTypeName(current)}`);
+                throw new TypeConflict(path.slice(0, keyIndex), 'array', getTypeName(current));
             }
             const next = path[keyIndex + 1] ? Object.create(null) : [];
             current.push(next);
             current = next;
         } else if (!current || typeof current !== 'object' || Array.isArray(current)) {
-            throw new TypeError(`Conflicting types at ${_debugKey(path.slice(0, keyIndex))}: expected mapping, got ${getTypeName(current)}`);
+            throw new TypeConflict(path.slice(0, keyIndex), 'mapping', getTypeName(current));
         } else if (Object.hasOwn(current, subKey)) {
             current = current[subKey];
         } else {
@@ -46,15 +29,15 @@ function _parseItem(query: Query, path: readonly (string|null)[], value: string,
     const subKey = path[path.length - 1];
     if (subKey === null) {
         if (!Array.isArray(current)) {
-            throw new TypeError(`Conflicting types at ${_debugKey(path.slice(0, path.length - 1))}: expected array, got ${getTypeName(current)}`);
+            throw new TypeConflict(path.slice(0, path.length - 1), 'array', getTypeName(current));
         }
 
         current.push(value);
     } else if (!current || typeof current !== 'object' || Array.isArray(current)) {
-        throw new TypeError(`Conflicting types at ${_debugKey(path.slice(0, path.length - 1))}: expected mapping, got ${getTypeName(current)}`);
+        throw new TypeConflict(path.slice(0, path.length - 1), 'mapping', getTypeName(current));
     } else if (Object.hasOwn(current, subKey)) {
         if (redefine === 'error') {
-            throw new TypeError(`Redefined key: ${JSON.stringify(stringifyKey(path))}`);
+            throw new RedefinitionError(path);
         }
 
         if (redefine === 'last') {
@@ -69,17 +52,35 @@ export type ParseOptions = {
     /**
      * Strategy to use when a key is defined multiple times.
      * 
-     * * `'first'` keep the value of the first occurance
-     * * `'last'` overwrite value with the last occurance
-     * * `'error'` throw a `TypeError` if a key is redefined
+     * * `'first'` - Leep the value of the first occurance.
+     * * `'last'` - Overwrite value with the last occurance.
+     * * `'error'` - Throw a {@link RedefinitionError} if a key is redefined.
      * 
      * @default 'last'
      */
     redefine?: 'first' | 'last' | 'error';
+
+    /**
+     * Strategy to use for errors, either syntax errors or type conflicts.
+     * 
+     * * `'throw'` - Throw an exception on any errors.
+     * * `'drop'` - Drop any query parameters containing errors.
+     * 
+     * @default 'throw'
+     */
+    error?: 'throw'|'drop';
 };
 
+/**
+ * Parse an extended query string in a syntax similar to Ruby on Rails.
+ * 
+ * @throws {TypeConflict} Thrown if two parameters expect different kinds of objects (`mapping` Vs `array`) at the same location.
+ * @throws {RedefinitionError} Thrown if two parameters want to set the same final key.
+ * @throws {SyntaxError} Thrown if there is an invalid key syntax.
+ */
 export function parse(queryString: string|Iterable<readonly [string, string|readonly string[]]>, options?: ParseOptions): Query {
     const redefine = options?.redefine ?? 'last';
+    const dropErrors = options?.error === 'drop';
     const query: Query = Object.create(null);
 
     if (typeof queryString === 'string') {
@@ -97,18 +98,30 @@ export function parse(queryString: string|Iterable<readonly [string, string|read
                     value = '';
                 }
 
-                _parseItem(query, parseKey(key), value, redefine);
+                try {
+                    _parseItem(query, parseKey(key), value, redefine);
+                } catch (error) {
+                    if (!dropErrors) throw error;
+                }
             }
         }
     } else {
         for (const [key, values] of queryString) {
-            const path = parseKey(key);
-            if (typeof values === 'string') {
-                _parseItem(query, path, values, redefine);
-            } else {
-                for (const value of values) {
-                    _parseItem(query, path, value, redefine);
+            try {
+                const path = parseKey(key);
+                if (typeof values === 'string') {
+                    _parseItem(query, path, values, redefine);
+                } else {
+                    for (const value of values) {
+                        try {
+                            _parseItem(query, path, value, redefine);
+                        } catch (error) {
+                            if (!dropErrors) throw error;
+                        }
+                    }
                 }
+            } catch (error) {
+                if (!dropErrors) throw error;
             }
         }
     }

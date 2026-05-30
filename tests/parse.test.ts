@@ -3,12 +3,13 @@ import { inspect } from 'node:util';
 
 import { ParseOptions, parse } from '../src/parse.js';
 import type { Query } from '../src/types.js';
+import { RedefinitionError, TypeConflict } from '../src/errors.js';
 
 export type TestCase = {
     input: string|Iterable<[string, string|string[]]>,
     options?: ParseOptions,
     result?: Query,
-    error?: Error|string|RegExp,
+    error?: unknown|string|RegExp,
 };
 
 const TEST_CASES: TestCase[] = [
@@ -69,7 +70,18 @@ const TEST_CASES: TestCase[] = [
     },
     {
         input: 'foo=A&foo=B',
-        error: 'Redefined key: "foo"',
+        error: RedefinitionError,
+        options: {
+            redefine: 'error'
+        },
+    },
+    {
+        input: [
+            ['foo[bar][baz][bla]', 'A'],
+            ['foo[else]', 'X'],
+            ['foo[bar][baz][bla]', 'B'],
+        ],
+        error: RedefinitionError,
         options: {
             redefine: 'error'
         },
@@ -130,8 +142,40 @@ const TEST_CASES: TestCase[] = [
             }
         }
     },
+    {
+        input: [
+            ['foo[bar]', 'object'],
+            ['foo[]', 'array'],
+        ],
+        error: TypeConflict
+    },
+    {
+        input: [
+            ['foo[bar][][baz]', 'object'],
+            ['foo[bar][baz][]', 'array'],
+        ],
+        error: TypeConflict
+    },
+    {
+        input: [
+            ['foo[]', 'A'],
+            ['foo[bar]', 'B'],
+            ['bar[baz]', 'X'],
+            ['bar[baz]', 'Y'],
+        ],
+        result: {
+            foo: ['A'],
+            bar: {
+                baz: 'X'
+            }
+        },
+        options: {
+            redefine: 'error',
+            error: 'drop',
+        }
+    }
 
-    // TODO: more tests, e.g. conflicts
+    // TODO: more tests, e.g. conflicts, drop error
 ];
 
 describe('parse', () => {

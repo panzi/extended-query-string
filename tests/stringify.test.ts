@@ -3,11 +3,12 @@ import { inspect } from 'node:util';
 
 import { stringify } from '../src/stringify.js';
 import type { Query } from '../src/types.js';
+import { CircularStructureError } from '../src/errors.js';
 
 export type TestCase = {
     input: Query|Map<string, unknown>,
     result?: string,
-    error?: ErrorConstructor|string|RegExp,
+    error?: unknown|string|RegExp,
 };
 
 const circular: { [key: string]: any } = {};
@@ -39,7 +40,7 @@ const TEST_CASES: TestCase[] = [
     },
     {
         input: circular,
-        error: /Cannot stringify circular/
+        error: CircularStructureError,
     },
     // TODO: more tests including error cases
 ];

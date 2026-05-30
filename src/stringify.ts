@@ -1,15 +1,16 @@
+import { CircularStructureError } from "./errors.js";
 import { stringifyKey, _debugKey } from "./stringifyKey.js";
-import type { Query } from "./types.js";
+import type { ParsedKey, Query } from "./types.js";
 
 export function stringify(query: Readonly<Query|ReadonlyMap<string, unknown>>): string {
-    const visited = new WeakMap<object, (string|null)[]>();
-    const buf: (string|null)[] = [];
+    const visited = new WeakMap<object, ParsedKey>();
+    const buf: ParsedKey = [];
 
-    function stringify(path: (string|null)[], value: unknown): void {
+    function stringify(path: ParsedKey, value: unknown): void {
         if (value && typeof value === 'object') {
             const otherKey = visited.get(value);
             if (otherKey !== undefined) {
-                throw new TypeError(`Cannot stringify circular structure! Found same object at ${_debugKey(otherKey)} and at ${_debugKey(path)}`);
+                throw new CircularStructureError(path, otherKey);
             }
 
             visited.set(value, path.slice());
