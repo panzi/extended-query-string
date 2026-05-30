@@ -11,9 +11,15 @@ are:
 
 * Simpler code with zero dependencies.
 * Simpler supported syntax. E.g. in `foo[1]` the `1` is still a mapping key and
-  not an index. Only `foo[]` refers to an array key.
-* Strict parsing that throws exceptions on syntax errors instead of doing
-  unexpected things.
+  not an array index. Only `[]` with noting between the brackets refers to an
+  array key.
+* Strict parsing that throws exceptions if there are:
+
+  * Illegal syntax in keys
+  * Conflicting types (mapping Vs array)
+  * Redefintion of keys
+
+  Though exceptions can be turned off, simply dropping any broken parameters.
 * Uses `Object.create(null)` for parsed objects that really only have the
   parsed properties. This would also prevent prototype pollution, though
   `Object.hasOwn()` is used anyway.
@@ -49,4 +55,4 @@ These are syntax errors.
 TODO
 ----
 
-Tests.
+More tests.
