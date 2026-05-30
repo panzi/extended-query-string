@@ -23,14 +23,6 @@
   "type": "module",
   "main": "./build/esm/index.js",
   "types": "./build/types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./build/types/index.d.ts",
-      "require": "./build/cjs/index.js",
-      "import": "./build/esm/index.mjs",
-      "default": "./build/esm/index.mjs"
-    }
-  },
   "scripts": {
     "tsc": "tsc",
     "clean": "rm -rf build docs",
