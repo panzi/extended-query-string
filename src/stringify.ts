@@ -2,7 +2,16 @@ import { CircularStructureError } from "./errors.js";
 import { stringifyKey, _debugKey } from "./stringifyKey.js";
 import type { ParsedKey, Query } from "./types.js";
 
-export function stringify(query: Readonly<Query|ReadonlyMap<string, unknown>>): string {
+/**
+ * Convert object into an extended query string.
+ * 
+ * `undefined` values are ignored, {@link Array} and {@link Set} objects are
+ * treated as arrays, any other objects are treated as mappings while correctly
+ * handling {@link Map} objects.
+ * 
+ * @throws {CircularStructureError}
+ */
+export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>): string {
     const visited = new WeakMap<object, ParsedKey>();
     const buf: ParsedKey = [];
 
