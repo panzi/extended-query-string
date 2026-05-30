@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - "*"
+    paths-ignore:
+    - '.github/workflows/docs.yml'
+    - 'README.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '26'
+
+      - name: Install dependencies
+        run: npm install --include=dev
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests
+        run: npm run -- test --color --verbose
+
