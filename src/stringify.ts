@@ -36,8 +36,8 @@ export type StringifyOptions = {
  * **NOTE:** This uses `instanceof` to check for {@link Set} and {@link Map},
  * meaning that check will fail if the objects come from a different realm.
  * 
- * @throws {CircularStructureError} Thrown if a circular structure is found in `query`.
- * @throws {IllegalKeyError} Thrown if there are illegal character in keys (`[` and `]`),
+ * @throws {@link CircularStructureError} Thrown if a circular structure is found in `query`.
+ * @throws {@link IllegalKeyError} Thrown if there are illegal character in keys (`[` and `]`),
  * empty non-top level keys (`""`).
  */
 export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, options?: StringifyOptions): string {

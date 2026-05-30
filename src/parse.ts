@@ -92,10 +92,10 @@ export type ParseOptions = {
 /**
  * Parse an extended query string in a syntax similar to Ruby on Rails.
  * 
- * @throws {TypeConflict} Thrown if two parameters expect different kinds of objects (`mapping` Vs `array`) at the same location.
- * @throws {RedefinitionError} Thrown if two parameters want to set the same leaf key.
- * @throws {PercentEncodingError} Thrown if there is broken %-encoding in any parameter.
- * @throws {KeySyntaxError} Thrown if there is an invalid key syntax.
+ * @throws {@link TypeConflict} Thrown if two parameters expect different kinds of objects (`mapping` Vs `array`) at the same location.
+ * @throws {@link RedefinitionError} Thrown if two parameters want to set the same leaf key.
+ * @throws {@link PercentEncodingError} Thrown if there is broken %-encoding in any parameter.
+ * @throws {@link KeySyntaxError} Thrown if there is an invalid key syntax.
  */
 export function parse(queryString: string|Iterable<readonly [string, string|readonly string[]]>, options?: ParseOptions): Query {
     const redefine = options?.redefine ?? 'last';

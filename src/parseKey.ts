@@ -9,7 +9,7 @@ import type { ParsedKey } from "./types.js";
  * The returned {@link ParsedKey} is an array that has strings for mapping-keys
  * and `null` for array positions.
  * 
- * @throws {KeySyntaxError} Thrown if there are unbalanced brackets or anything but
+ * @throws {@link KeySyntaxError} Thrown if there are unbalanced brackets or anything but
  * a `[` after a `]`.
  */
 export function parseKey(key: string): ParsedKey {
