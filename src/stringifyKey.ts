@@ -1,9 +1,9 @@
 import type { ParsedKey } from "./types.js";
 
 /**
- * Turn a {@link ParsedKey} into a URL parameter string.
+ * Turn a {@link ParsedKey} into a query parameter string.
  * 
- * The resulting stirng still has to be %-encoded!
+ * The resulting string still has to be %-encoded!
  */
 export function stringifyKey(path: Readonly<ParsedKey>): string {
     const buf = [path[0] ?? ''];

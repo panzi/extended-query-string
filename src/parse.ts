@@ -56,6 +56,9 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
     }
 }
 
+/**
+ * Options for {@link parse}.
+ */
 export type ParseOptions = {
     /**
      * Strategy to use when a key is defined multiple times.
@@ -90,8 +93,8 @@ export type ParseOptions = {
  * Parse an extended query string in a syntax similar to Ruby on Rails.
  * 
  * @throws {TypeConflict} Thrown if two parameters expect different kinds of objects (`mapping` Vs `array`) at the same location.
- * @throws {RedefinitionError} Thrown if two parameters want to set the same final key.
- * @throws {PercentEncodingError} Thrown if there is broken %-encoding.
+ * @throws {RedefinitionError} Thrown if two parameters want to set the same leaf key.
+ * @throws {PercentEncodingError} Thrown if there is broken %-encoding in any parameter.
  * @throws {KeySyntaxError} Thrown if there is an invalid key syntax.
  */
 export function parse(queryString: string|Iterable<readonly [string, string|readonly string[]]>, options?: ParseOptions): Query {

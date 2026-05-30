@@ -1,12 +1,18 @@
 import { CircularStructureError, IllegalKeyError } from "./errors.js";
 import type { ParsedKey, Query } from "./types.js";
 
+/**
+ * Options for {@link stringify}.
+ */
 export type StringifyOptions = {
     /**
      * Strategy to use for errors.
      * 
      * * `'throw'` - Throw an exception on any errors.
      * * `'drop'` - Drop any query parameters containing errors.
+     * 
+     * Errors are illegal characters in keys (`[` and `]`), empty keys (`""`), and
+     * circular data structures.
      * 
      * @default 'throw'
      */
@@ -30,8 +36,9 @@ export type StringifyOptions = {
  * **NOTE:** This uses `instanceof` to check for {@link Set} and {@link Map},
  * meaning that check will fail if the objects come from a different realm.
  * 
- * @throws {CircularStructureError}
- * @throws {IllegalKeyError}
+ * @throws {CircularStructureError} Thrown if a circular structure is found in `query`.
+ * @throws {IllegalKeyError} Thrown if there are illegal character in keys (`[` and `]`),
+ * empty non-top level keys (`""`).
  */
 export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, options?: StringifyOptions): string {
     const dropErrors = options?.error === 'drop';

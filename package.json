@@ -21,17 +21,31 @@
   "license": "MIT",
   "author": "Mathias Panzenböck",
   "type": "module",
-  "main": "index.js",
+  "main": "./build/esm/index.js",
+  "types": "./build/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/types/index.d.ts",
+      "require": "./build/cjs/index.js",
+      "import": "./build/esm/index.mjs",
+      "default": "./build/esm/index.mjs"
+    }
+  },
   "scripts": {
     "tsc": "tsc",
-    "clean": "rm -rf build",
-    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf build docs",
+    "build": "npm run build:types && npm run build:cjs && npm run build:esm",
+    "build:types": "npx tsc --outDir build/types --declaration --emitDeclarationOnly",
+    "build:cjs": "npx tsc --module commonjs --outDir build/cjs --declaration",
+    "build:esm": "npx tsc --module es2022 --outDir build/esm",
+    "build:doc": "typedoc src",
     "test": "jest"
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
     "@types/node": "^25.9.1",
     "ts-jest": "^29.4.11",
+    "typedoc": "^0.28.19",
     "typescript": "^6.0.3"
   },
   "jest": {

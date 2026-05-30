@@ -71,7 +71,7 @@ const TEST_CASES: TestCase[] = [
     },
 ];
 
-describe('parse', () => {
+describe('parseKey', () => {
     TEST_CASES.map(({ input, result, error }) => {
         const name = typeof input === 'string' ? input : inspect(input, { depth: null, compact: true, breakLength: Infinity });
         test(name, () => {

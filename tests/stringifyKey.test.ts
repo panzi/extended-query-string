@@ -39,7 +39,7 @@ const TEST_CASES: TestCase[] = [
         result: 'foo[bar][]',
     },
 
-    // technically not correct inputs
+    // technically incorrect inputs
     {
         input: [],
         result: '',

@@ -3,7 +3,7 @@ import { inspect } from 'node:util';
 
 import { stringify, StringifyOptions } from '../src/stringify.js';
 import type { Query } from '../src/types.js';
-import { CircularStructureError } from '../src/errors.js';
+import { CircularStructureError, IllegalKeyError } from '../src/errors.js';
 
 export type TestCase = {
     input: Query|Map<string, unknown>,
@@ -31,7 +31,7 @@ const TEST_CASES: TestCase[] = [
                 "bär %": 'bla BLAÖ'
             }
         },
-        result: 'foo%5Bb%C3%A4r%20%25%5D=bla%20BLA%C3%96'
+        result: 'foo%5Bb%C3%A4r%20%25%5D=bla%20BLA%C3%96',
     },
     {
         input: new Map(Object.entries({
@@ -52,25 +52,67 @@ const TEST_CASES: TestCase[] = [
             ' ': ' '
         },
         options: { plus: true },
-        result: '+=+'
+        result: '+=+',
     },
     {
         input: {
             'foo bar': 'baz bla'
         },
         options: { plus: true },
-        result: 'foo+bar=baz+bla'
+        result: 'foo+bar=baz+bla',
     },
 
     {
         input: circular,
         options: { error: 'drop' },
-        result: ''
+        result: '',
     },
     {
         input: { foo: { bar: 'baz', circular } },
         options: { error: 'drop' },
-        result: 'foo%5Bbar%5D=baz'
+        result: 'foo%5Bbar%5D=baz',
+    },
+    {
+        input: {
+            '': ''
+        },
+        result: '=',
+    },
+    {
+        input: {
+            '': ['']
+        },
+        result: '%5B%5D=',
+    },
+    {
+        input: {
+            foo: { '': '' },
+        },
+        error: IllegalKeyError,
+    },
+    {
+        input: {
+            '[': '',
+        },
+        error: IllegalKeyError,
+    },
+    {
+        input: {
+            ']': '',
+        },
+        error: IllegalKeyError,
+    },
+    {
+        input: {
+            '[]': '',
+        },
+        error: IllegalKeyError,
+    },
+    {
+        input: {
+            'foo[]': '',
+        },
+        error: IllegalKeyError,
     },
 ];
 

@@ -1,0 +1,11 @@
+{
+    "excludePrivate": true,
+    "gitRevision": "main",
+    "externalSymbolLinkMappings": {
+        "typescript": {
+            "Map": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+            "Set": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+            "Array": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
+        }
+    }
+}
