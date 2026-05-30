@@ -63,8 +63,8 @@ export type ParseOptions = {
     /**
      * Strategy to use when a key is defined multiple times.
      * 
-     * * `'first'` - Leep the value of the first occurance.
-     * * `'last'` - Overwrite value with the last occurance.
+     * * `'first'` - Leave the value of the first occurrence.
+     * * `'last'` - Overwrite value with the last occurrence.
      * * `'error'` - Throw a {@link RedefinitionError} if a key is redefined.
      * 
      * @default 'last'
@@ -126,7 +126,7 @@ export function parse(queryString: string|Iterable<readonly [string, string|read
                     _parseItem(query, parseKey(key), value, redefine);
                 } catch (error) {
                     if (!dropErrors) {
-                        // Or shoud it be Error.isError(error) && error.name === 'URIError'?
+                        // Or should it be Error.isError(error) && error.name === 'URIError'?
                         if (error instanceof URIError) {
                             throw new PercentEncodingError(item, { cause: error });
                         }
@@ -151,7 +151,7 @@ export function parse(queryString: string|Iterable<readonly [string, string|read
                  * The possible errors happening here are {@link TypeConflict}
                  * and {@link RedefinitionError}. Each of them would happen on
                  * every value in the inner loop, thus the try-catch is outside
-                 * of the loop for shortcutting.
+                 * of the loop for short-cutting.
                  */
                 if (!dropErrors) throw error;
             }

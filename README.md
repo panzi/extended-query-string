@@ -16,19 +16,19 @@ Features, some of which making it different to these:
 
 * Simpler code with zero dependencies. (Except for dev dependencies, of course.)
 * Simpler supported syntax. E.g. in `foo[1]` the `1` is still a mapping key and
-  not an array index. Only `[]` with noting between the brackets refers to an
+  not an array index. Only `[]` with nothing between the brackets refers to an
   array key.
 * Strict parsing that throws exceptions if there is:
 
   * Illegal syntax in keys
   * Conflicting types (mapping Vs array)
-  * Redefintion of keys
+  * Redefinition of keys
 
   Though exceptions can be turned off, simply dropping any broken parameters.
 * Strict stringification that throws exceptions if there are:
 
   * Circular structures
-  * Illegal keys (mapping keys containig `[` or `]` or non-top level empty keys)
+  * Illegal keys (mapping keys containing `[` or `]` or non-top level empty keys)
 
   Though exceptions can be turned off, simply dropping any broken parameters.
 * Uses `Object.create(null)` for parsed objects that really only have the

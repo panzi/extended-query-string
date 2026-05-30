@@ -65,7 +65,7 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
             } else if (value instanceof Map) {
                 for (const key of value.keys()) {
                     const strKey = String(key);
-                    // 2 strKey.includes() calles are much faster than one /[\[\]]/.test()
+                    // 2 strKey.includes() calls are much faster than one /[\[\]]/.test()
                     if (strKey.includes('[') || strKey.includes(']') || path.length && !strKey) {
                         if (dropErrors) return;
                         throw new IllegalKeyError(strKey);

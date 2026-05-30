@@ -130,7 +130,7 @@ export class KeySyntaxError extends ParseError {
  * Thrown by {@link parse} if there is broken %-encoding in any parameter.
  */
 export class PercentEncodingError extends ParseError {
-    /** The unparsed item (`<key>=<value>` pair) with the borken %-encoding. */
+    /** The unparsed item (`<key>=<value>` pair) with the broken %-encoding. */
     item: string;
 
     constructor(item: string, options?: ErrorOptions) {
