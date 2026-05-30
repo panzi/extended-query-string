@@ -102,10 +102,19 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
             // the brackets in the future? Is that something one would want?
             buf.push(encodeURIComponent(path[0] ?? ''));
             for (let index = 1; index < path.length; ++index) {
-                buf.push('%5B', encodeURIComponent(path[index] ?? ''), '%5D');
+                const key = path[index];
+                if (!key) {
+                    buf.push('%5B%5D');
+                } else {
+                    buf.push('%5B', encodeURIComponent(key), '%5D');
+                }
             }
 
-            buf.push('=', encodeURIComponent(String(value)));
+            if (value === null) {
+                buf.push('=');
+            } else {
+                buf.push('=', encodeURIComponent(String(value)));
+            }
         }
     }
 

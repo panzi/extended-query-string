@@ -8,7 +8,12 @@ import type { ParsedKey } from "./types.js";
 export function stringifyKey(path: Readonly<ParsedKey>): string {
     const buf = [path[0] ?? ''];
     for (let index = 1; index < path.length; ++index) {
-        buf.push('[', path[index] ?? '', ']');
+        const key = path[index];
+        if (!key) {
+            buf.push('[]');
+        } else {
+            buf.push('[', encodeURIComponent(key), ']');
+        }
     }
 
     return buf.join('');
