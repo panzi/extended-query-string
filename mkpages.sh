@@ -18,6 +18,8 @@ if [[ -e docs ]]; then
     rm -rf docs
 fi
 
+npm run build:doc
+
 git checkout gh-pages
 
 cp -r docs/* .
