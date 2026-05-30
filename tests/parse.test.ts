@@ -18,6 +18,10 @@ const TEST_CASES: TestCase[] = [
         result: {},
     },
     {
+        input: '[]',
+        result: { '': [''] },
+    },
+    {
         input: '=',
         result: {'':''},
     },
@@ -173,7 +177,35 @@ const TEST_CASES: TestCase[] = [
             redefine: 'error',
             error: 'drop',
         }
-    }
+    },
+    {
+        input: 'foo[=',
+        error: SyntaxError,
+    },
+    {
+        input: 'foo]=',
+        error: SyntaxError,
+    },
+    {
+        input: 'foo[[]=',
+        error: SyntaxError,
+    },
+    {
+        input: 'foo[]]=',
+        error: SyntaxError,
+    },
+    {
+        input: 'foo[]bar=',
+        error: SyntaxError,
+    },
+    {
+        input: 'foo[]bar[baz]=',
+        error: SyntaxError,
+    },
+    {
+        input: 'foo[bar] [baz]=',
+        error: SyntaxError,
+    },
 
     // TODO: more tests, e.g. conflicts, drop error
 ];

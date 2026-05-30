@@ -40,6 +40,7 @@ CHAR := /* not "[" or "]" */
 * `foo[]`
 * `foo[][]`
 * `foo bar[][123 $ B_Ä.Z]`
+* `[]` - In this case the key in the top level mapping is the empty string (`""`).
 
 ### Negative Examples
 
@@ -51,6 +52,7 @@ These are syntax errors.
 * `foo[]]`
 * `foo[]bar`
 * `foo[]bar[baz]`
+* `foo[bar] [baz]`
 
 TODO
 ----
