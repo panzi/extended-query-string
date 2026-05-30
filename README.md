@@ -12,7 +12,7 @@ parser option of [expressjs](https://expressjs.com/),
 [qs](https://www.npmjs.com/package/qs#readme),
 [Ruby on Rails](https://rubyonrails.org/), etc.
 
-Features, some of which making it differencet to these:
+Features, some of which making it different to these:
 
 * Simpler code with zero dependencies. (Except for dev dependencies, of course.)
 * Simpler supported syntax. E.g. in `foo[1]` the `1` is still a mapping key and
