@@ -1,7 +1,15 @@
 import type { ParsedKey } from "./types";
 
 /**
- * @throws {SyntaxError}
+ * Parse an extended query string key.
+ * 
+ * They passed {@link key} is already to be %-decoded.
+ * 
+ * The returned {@link ParsedKey} is an array that has strings for mapping-keys
+ * and `null` for array positions.
+ * 
+ * @throws {SyntaxError} Thrown if there are unbalanced brackets or anything but
+ * a `[` after a `]`.
  */
 export function parseKey(key: string): ParsedKey {
     let openIndex = key.indexOf('[');
@@ -13,6 +21,7 @@ export function parseKey(key: string): ParsedKey {
         return [key];
     }
 
+    // The first segment is always a mapping-key, even if it's the empty string.
     const path: ParsedKey = [key.slice(0, openIndex)];
 
     let closeIndex = -1;

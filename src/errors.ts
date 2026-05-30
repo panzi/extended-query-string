@@ -8,7 +8,18 @@ export class ExtendedQueryStringError extends Error {
     }
 }
 
-export class CircularStructureError extends ExtendedQueryStringError {
+export class StringifyError extends ExtendedQueryStringError {}
+
+export class IllegalKeyError extends StringifyError {
+    key: string;
+
+    constructor(key: string, options?: ErrorOptions) {
+        super(`Illegal mapping key: ${JSON.stringify(key)}`, options);
+        this.key = key;
+    }
+}
+
+export class CircularStructureError extends StringifyError {
     firstKey: ParsedKey;
     secondKey: ParsedKey;
 

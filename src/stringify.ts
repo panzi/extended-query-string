@@ -1,8 +1,17 @@
-import { CircularStructureError } from "./errors.js";
-import { stringifyKey, _debugKey } from "./stringifyKey.js";
+import { CircularStructureError, IllegalKeyError } from "./errors.js";
 import type { ParsedKey, Query } from "./types.js";
 
 export type StringifyOptions = {
+    /**
+     * Strategy to use for errors.
+     * 
+     * * `'throw'` - Throw an exception on any errors.
+     * * `'drop'` - Drop any query parameters containing errors.
+     * 
+     * @default 'throw'
+     */
+    error?: 'throw'|'drop';
+
     /**
      * Encode `+` as a space (` `).
      * 
@@ -18,9 +27,14 @@ export type StringifyOptions = {
  * treated as arrays, any other objects are treated as mappings while correctly
  * handling {@link Map} objects.
  * 
+ * **NOTE:** This uses `instanceof` to check for {@link Set} and {@link Map},
+ * meaning that check will fail if the objects come from a different realm.
+ * 
  * @throws {CircularStructureError}
+ * @throws {IllegalKeyError}
  */
 export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, options?: StringifyOptions): string {
+    const dropErrors = options?.error === 'drop';
     const plus = options?.plus ?? false;
     const visited = new WeakMap<object, ParsedKey>();
     const buf: ParsedKey = [];
@@ -29,6 +43,7 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
         if (value && typeof value === 'object') {
             const otherKey = visited.get(value);
             if (otherKey !== undefined) {
+                if (dropErrors) return;
                 throw new CircularStructureError(path, otherKey);
             }
 
@@ -42,13 +57,23 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
                 path.pop();
             } else if (value instanceof Map) {
                 for (const key of value.keys()) {
-                    path.push(String(key));
+                    const strKey = String(key);
+                    // 2 strKey.includes() calles are much faster than one /[\[\]]/.test()
+                    if (strKey.includes('[') || strKey.includes(']') || path.length && !strKey) {
+                        if (dropErrors) return;
+                        throw new IllegalKeyError(strKey);
+                    }
+                    path.push(strKey);
                     stringify(path, value.get(key));
                     path.pop();
                 }
             } else {
                 for (const key in value) {
                     if (Object.hasOwn(value, key)) {
+                        if (key.includes('[') || key.includes(']') || path.length && !key) {
+                            if (dropErrors) return;
+                            throw new IllegalKeyError(key);
+                        }
                         path.push(key);
                         stringify(path, (value as any)[key]);
                         path.pop();
@@ -62,7 +87,18 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
                 buf.push('&');
             }
 
-            buf.push(encodeURIComponent(stringifyKey(path)), '=', encodeURIComponent(String(value)));
+            // Inlining is a bit faster in Firefox (6 Mops/s Vs 5 Mops/s) and
+            // insignificantly slower in Brave (3.2 Mops/s Vs 3.1 Mops/s).
+            // See: https://jsbm.dev/LFzC3d9e6CYOQ
+            //
+            // With inlining like this I could add an option to not %-encode
+            // the brackets in the future? Is that something one would want?
+            buf.push(encodeURIComponent(path[0] ?? ''));
+            for (let index = 1; index < path.length; ++index) {
+                buf.push('%5B', encodeURIComponent(path[index] ?? ''), '%5D');
+            }
+
+            buf.push('=', encodeURIComponent(String(value)));
         }
     }
 

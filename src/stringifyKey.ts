@@ -1,5 +1,10 @@
 import type { ParsedKey } from "./types";
 
+/**
+ * Turn a {@link ParsedKey} into a URL parameter string.
+ * 
+ * The resulting stirng still has to be %-encoded!
+ */
 export function stringifyKey(path: Readonly<ParsedKey>): string {
     const buf = [path[0] ?? ''];
     for (let index = 1; index < path.length; ++index) {

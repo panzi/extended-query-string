@@ -60,16 +60,26 @@ const TEST_CASES: TestCase[] = [
         },
         options: { plus: true },
         result: 'foo+bar=baz+bla'
-    }
-    // TODO: more tests including error cases
+    },
+
+    {
+        input: circular,
+        options: { error: 'drop' },
+        result: ''
+    },
+    {
+        input: { foo: { bar: 'baz', circular } },
+        options: { error: 'drop' },
+        result: 'foo%5Bbar%5D=baz'
+    },
 ];
 
 describe('stringify', () => {
     TEST_CASES.map(({ input, result, options, error }) => {
-        const name = inspect(input, { depth: null });
+        const name = inspect(input, { depth: null, compact: true, breakLength: Infinity });
         test(name, () => {
             if (error) {
-                expect(() => stringify(input, options)).toThrow(error);
+                expect(() => console.error(JSON.stringify(stringify(input, options)))).toThrow(error);
             } else {
                 const actual = stringify(input, options);
                 expect(actual).toEqual(result);

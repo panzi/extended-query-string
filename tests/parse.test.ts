@@ -421,10 +421,10 @@ const TEST_CASES: TestCase[] = [
 
 describe('parse', () => {
     TEST_CASES.map(({ input, options, result, error }) => {
-        const name = typeof input === 'string' ? input : inspect(input, { depth: null });
+        const name = typeof input === 'string' ? input : inspect(input, { depth: null, compact: true, breakLength: Infinity });
         test(name, () => {
             if (error) {
-                expect(() => parse(input, options)).toThrow(error);
+                expect(() => console.error(parse(input, options))).toThrow(error);
             } else {
                 const actual = parse(input, options);
                 expect(actual).toEqual(result);

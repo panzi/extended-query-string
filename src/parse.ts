@@ -1,6 +1,5 @@
 import { RedefinitionError, TypeConflict } from "./errors.js";
 import { parseKey } from "./parseKey.js";
-import { _debugKey } from "./stringifyKey.js";
 import { getTypeName, type ParsedKey, type Query } from "./types.js";
 
 function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'first' | 'last' | 'error'): void {
@@ -61,7 +60,7 @@ export type ParseOptions = {
     redefine?: 'first' | 'last' | 'error';
 
     /**
-     * Strategy to use for errors, either syntax errors or type conflicts.
+     * Strategy to use for errors.
      * 
      * * `'throw'` - Throw an exception on any errors.
      * * `'drop'` - Drop any query parameters containing errors.
