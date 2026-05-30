@@ -1,6 +1,11 @@
 Extended Query String
 =====================
 
+[![Test Status](https://img.shields.io/github/actions/workflow/status/panzi/extended-query-string/tests.yml)](https://github.com/panzi/extended-query-string/actions/workflows/tests.yml)
+[![Release](https://img.shields.io/github/v/tag/panzi/extended-query-string)](https://github.com/panzi/extended-query-string/tags)
+[![MIT License](https://img.shields.io/github/license/panzi/extended-query-string)](https://github.com/panzi/extended-query-string/blob/main/LICENSE)
+[![API Reference](https://img.shields.io/badge/API_Reference-informational)](https://panzi.github.io/extended-query-string)
+
 Parse and stringify extended query strings, similar to the `extended` query
 parser option of [expressjs](https://expressjs.com/),
 [body-parser](https://github.com/expressjs/body-parser#readme),
@@ -96,8 +101,3 @@ These are syntax errors.
 * `foo[]bar`
 * `foo[]bar[baz]`
 * `foo[bar] [baz]`
-
-License
--------
-
-[MIT license](LICENSE)
