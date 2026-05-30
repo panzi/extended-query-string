@@ -1,4 +1,5 @@
-import type { ParsedKey } from "./types";
+import { KeySyntaxError } from "./errors.js";
+import type { ParsedKey } from "./types.js";
 
 /**
  * Parse an extended query string key.
@@ -8,7 +9,7 @@ import type { ParsedKey } from "./types";
  * The returned {@link ParsedKey} is an array that has strings for mapping-keys
  * and `null` for array positions.
  * 
- * @throws {SyntaxError} Thrown if there are unbalanced brackets or anything but
+ * @throws {KeySyntaxError} Thrown if there are unbalanced brackets or anything but
  * a `[` after a `]`.
  */
 export function parseKey(key: string): ParsedKey {
@@ -16,7 +17,7 @@ export function parseKey(key: string): ParsedKey {
     if (openIndex < 0) {
         const closeIndex = key.indexOf(']');
         if (closeIndex >= 0) {
-            throw new SyntaxError(`Syntax error at index ${closeIndex}: unexpected "]" (expected identifier character): ${JSON.stringify(key)}`);
+            throw new KeySyntaxError(key, closeIndex, '<identifier>', ']');
         }
         return [key];
     }
@@ -29,11 +30,11 @@ export function parseKey(key: string): ParsedKey {
     for (;;) {
         const newCloseIndex = key.indexOf(']', closeIndex + 1);
         if (newCloseIndex < 0) {
-            throw new SyntaxError(`Syntax error at index ${key.length}: unexpected end of string (expected "]"): ${JSON.stringify(key)}`);
+            throw new KeySyntaxError(key, key.length, ']', null);
         }
 
         if (newCloseIndex < openIndex) {
-            throw new SyntaxError(`Syntax error at index ${newCloseIndex}: unexpected "]" (expected identifier character): ${JSON.stringify(key)}`);
+            throw new KeySyntaxError(key, newCloseIndex, '<identifier>', ']');
         }
 
         closeIndex = newCloseIndex;
@@ -41,7 +42,7 @@ export function parseKey(key: string): ParsedKey {
         const nextKey = key.slice(openIndex + 1, closeIndex);
         const index = nextKey.indexOf('[');
         if (index >= 0) {
-            throw new SyntaxError(`Syntax error at index ${openIndex + 1 + index}: unexpected "[" (expected identifier character): ${JSON.stringify(key)}`);
+            throw new KeySyntaxError(key, openIndex + 1 + index, '<identifier>', '[');
         }
 
         path.push(nextKey || null);
@@ -54,7 +55,7 @@ export function parseKey(key: string): ParsedKey {
 
         const char = key.charAt(openIndex);
         if (char !== '[') {
-            throw new SyntaxError(`Syntax error at index ${openIndex}: unexpected ${JSON.stringify(char)} (expected "["): ${JSON.stringify(key)}`);
+            throw new KeySyntaxError(key, openIndex, '[', char || null);
         }
     }
 

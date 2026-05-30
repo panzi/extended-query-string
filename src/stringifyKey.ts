@@ -1,4 +1,4 @@
-import type { ParsedKey } from "./types";
+import type { ParsedKey } from "./types.js";
 
 /**
  * Turn a {@link ParsedKey} into a URL parameter string.

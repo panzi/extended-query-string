@@ -3,7 +3,7 @@ import { inspect } from 'node:util';
 
 import { ParseOptions, parse } from '../src/parse.js';
 import type { Query } from '../src/types.js';
-import { RedefinitionError, TypeConflict } from '../src/errors.js';
+import { KeySyntaxError, PercentEncodingError, RedefinitionError, TypeConflict } from '../src/errors.js';
 
 export type TestCase = {
     input: string|Iterable<[string, string|string[]]>,
@@ -271,49 +271,49 @@ const TEST_CASES: TestCase[] = [
     // syntax errors
     {
         input: 'foo[=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
     {
         input: 'foo]=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
     {
         input: 'foo[[]=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
     {
         input: 'foo[]]=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
     {
         input: 'foo[]bar=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
     {
         input: 'foo[]bar[baz]=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
     {
         input: 'foo[bar] [baz]=',
-        error: SyntaxError,
+        error: KeySyntaxError,
     },
 
     // broken %-encoding
     {
         input: 'foo%=',
-        error: URIError,
+        error: PercentEncodingError,
     },
     {
         input: 'foo=%',
-        error: URIError,
+        error: PercentEncodingError,
     },
     {
         input: 'foo%FF=',
-        error: URIError,
+        error: PercentEncodingError,
     },
     {
         input: 'foo=%FF',
-        error: URIError,
+        error: PercentEncodingError,
     },
 
     // error: 'drop'

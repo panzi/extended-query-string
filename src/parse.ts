@@ -1,4 +1,13 @@
-import { RedefinitionError, TypeConflict } from "./errors.js";
+import {
+    PercentEncodingError,
+    RedefinitionError,
+    TypeConflict,
+
+    // used in JSDoc
+    // @ts-ignore
+    type KeySyntaxError,
+
+} from "./errors.js";
 import { parseKey } from "./parseKey.js";
 import { getTypeName, type ParsedKey, type Query } from "./types.js";
 
@@ -82,8 +91,8 @@ export type ParseOptions = {
  * 
  * @throws {TypeConflict} Thrown if two parameters expect different kinds of objects (`mapping` Vs `array`) at the same location.
  * @throws {RedefinitionError} Thrown if two parameters want to set the same final key.
- * @throws {URIError} Thrown if there is broken %-encoding.
- * @throws {SyntaxError} Thrown if there is an invalid key syntax.
+ * @throws {PercentEncodingError} Thrown if there is broken %-encoding.
+ * @throws {KeySyntaxError} Thrown if there is an invalid key syntax.
  */
 export function parse(queryString: string|Iterable<readonly [string, string|readonly string[]]>, options?: ParseOptions): Query {
     const redefine = options?.redefine ?? 'last';
@@ -97,7 +106,7 @@ export function parse(queryString: string|Iterable<readonly [string, string|read
                 queryString = queryString.replaceAll('+', ' ');
             }
 
-            for (let item of queryString.split('&')) {
+            for (const item of queryString.split('&')) {
                 try {
                     let key: string;
                     let value: string;
@@ -113,7 +122,13 @@ export function parse(queryString: string|Iterable<readonly [string, string|read
 
                     _parseItem(query, parseKey(key), value, redefine);
                 } catch (error) {
-                    if (!dropErrors) throw error;
+                    if (!dropErrors) {
+                        // Or shoud it be Error.isError(error) && error.name === 'URIError'?
+                        if (error instanceof URIError) {
+                            throw new PercentEncodingError(item, { cause: error });
+                        }
+                        throw error;
+                    }
                 }
             }
         }
