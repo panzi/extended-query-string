@@ -19,7 +19,7 @@ export type StringifyOptions = {
     error?: 'throw'|'drop';
 
     /**
-     * Encode `+` as a space (` `).
+     * Encode space (` `) as `+`.
      * 
      * @default false
      */
