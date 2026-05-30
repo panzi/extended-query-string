@@ -1,13 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 import { inspect } from 'node:util';
 
-import { stringify } from '../src/stringify.js';
+import { stringify, StringifyOptions } from '../src/stringify.js';
 import type { Query } from '../src/types.js';
 import { CircularStructureError } from '../src/errors.js';
 
 export type TestCase = {
     input: Query|Map<string, unknown>,
     result?: string,
+    options?: StringifyOptions,
     error?: unknown|string|RegExp,
 };
 
@@ -21,12 +22,16 @@ const TEST_CASES: TestCase[] = [
         result: '',
     },
     {
+        input: new Map(),
+        result: '',
+    },
+    {
         input: {
             foo: {
-                bar: 'bla BLA'
+                "bär %": 'bla BLAÖ'
             }
         },
-        result: 'foo%5Bbar%5D=bla%20BLA'
+        result: 'foo%5Bb%C3%A4r%20%25%5D=bla%20BLA%C3%96'
     },
     {
         input: new Map(Object.entries({
@@ -42,17 +47,31 @@ const TEST_CASES: TestCase[] = [
         input: circular,
         error: CircularStructureError,
     },
+    {
+        input: {
+            ' ': ' '
+        },
+        options: { plus: true },
+        result: '+=+'
+    },
+    {
+        input: {
+            'foo bar': 'baz bla'
+        },
+        options: { plus: true },
+        result: 'foo+bar=baz+bla'
+    }
     // TODO: more tests including error cases
 ];
 
 describe('stringify', () => {
-    TEST_CASES.map(({ input, result, error }) => {
+    TEST_CASES.map(({ input, result, options, error }) => {
         const name = inspect(input, { depth: null });
         test(name, () => {
             if (error) {
-                expect(() => stringify(input)).toThrow(error);
+                expect(() => stringify(input, options)).toThrow(error);
             } else {
-                const actual = stringify(input);
+                const actual = stringify(input, options);
                 expect(actual).toEqual(result);
             }
         });

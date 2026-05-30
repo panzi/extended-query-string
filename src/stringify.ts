@@ -2,6 +2,15 @@ import { CircularStructureError } from "./errors.js";
 import { stringifyKey, _debugKey } from "./stringifyKey.js";
 import type { ParsedKey, Query } from "./types.js";
 
+export type StringifyOptions = {
+    /**
+     * Encode `+` as a space (` `).
+     * 
+     * @default false
+     */
+    plus?: boolean;
+};
+
 /**
  * Convert object into an extended query string.
  * 
@@ -11,7 +20,8 @@ import type { ParsedKey, Query } from "./types.js";
  * 
  * @throws {CircularStructureError}
  */
-export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>): string {
+export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, options?: StringifyOptions): string {
+    const plus = options?.plus ?? false;
     const visited = new WeakMap<object, ParsedKey>();
     const buf: ParsedKey = [];
 
@@ -58,7 +68,13 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>): 
 
     stringify([], query);
 
-    return buf.join('');
+    let queryString = buf.join('');
+
+    if (plus) {
+        queryString = queryString.replaceAll('%20', '+');
+    }
+
+    return queryString;
 }
 
 export default stringify;

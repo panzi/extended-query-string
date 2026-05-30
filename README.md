@@ -27,6 +27,9 @@ are:
 Key Syntax
 ----------
 
+**NOTE:** Keys cannot contain `[` or `]`. %-encoding does *not* escape these
+characters.
+
 ```
 KEY  := CHAR* ( "[" CHAR* "]" )*
 CHAR := /* not "[" or "]" */

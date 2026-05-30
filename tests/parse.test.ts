@@ -13,6 +13,7 @@ export type TestCase = {
 };
 
 const TEST_CASES: TestCase[] = [
+    // empty-ish things
     {
         input: '',
         result: {},
@@ -23,24 +24,34 @@ const TEST_CASES: TestCase[] = [
     },
     {
         input: '=',
-        result: {'':''},
+        result: { '': '' },
     },
     {
         input: '=&=',
-        result: {'':''},
+        result: { '': '' },
     },
     {
         input: '&',
-        result: {'':''},
+        result: { '': '' },
+    },
+    {
+        input: '&&&',
+        result: { '': '' },
     },
     {
         input: '=&',
-        result: {'':''},
+        result: { '': '' },
     },
     {
         input: '&=',
-        result: {'':''},
+        result: { '': '' },
     },
+    {
+        input: [['', '']],
+        result: { '': '' },
+    },
+
+    // redefinitions
     {
         input: 'foo=FOO&bar=BAR',
         result: {
@@ -73,6 +84,33 @@ const TEST_CASES: TestCase[] = [
         },
     },
     {
+        input: [
+            ['foo', ['A', 'B', 'C']]
+        ],
+        options: {
+            redefine: 'first'
+        },
+        result: { foo: 'A' }
+    },
+    {
+        input: [
+            ['foo', ['A', 'B', 'C']]
+        ],
+        options: {
+            redefine: 'last'
+        },
+        result: { foo: 'C' }
+    },
+    {
+        input: [
+            ['foo', ['A', 'B', 'C']]
+        ],
+        options: {
+            redefine: 'error'
+        },
+        error: RedefinitionError,
+    },
+    {
         input: 'foo=A&foo=B',
         error: RedefinitionError,
         options: {
@@ -90,12 +128,58 @@ const TEST_CASES: TestCase[] = [
             redefine: 'error'
         },
     },
+
+    // plus
     {
-        input: 'öÄÜß $"\'-_/\\()=[]',
+        input: '+',
+        options: { plus: true },
+        result: { ' ': '' },
+    },
+    {
+        input: '+=+',
+        options: { plus: true },
+        result: { ' ': ' ' },
+    },
+    {
+        input: '+&+',
+        options: { plus: true },
+        result: { ' ': '' },
+    },
+    {
+        input: 'foo+%20bar=+bla%20baz+',
+        options: { plus: true },
+        result: { 'foo  bar': ' bla baz ' },
+    },
+    {
+        input: '+',
+        options: { plus: false },
+        result: { '+': '' },
+    },
+    {
+        input: '+=+',
+        options: { plus: false },
+        result: { '+': '+' },
+    },
+    {
+        input: '+&+',
+        options: { plus: false },
+        result: { '+': '' },
+    },
+    {
+        input: 'foo+%20bar=+bla%20baz+',
+        options: { plus: false },
+        result: { 'foo+ bar': '+bla baz+' },
+    },
+
+    // weird characters
+    {
+        input: 'öÄÜß $"\'-_/\\()+%25=+%25[]',
         result: {
-            'öÄÜß $"\'-_/\\()': '[]',
+            'öÄÜß $"\'-_/\\()+%': '+%[]',
         },
     },
+
+    // deep nesting
     {
         input: 'a[b][c][d][e][f]=one&a[b][c][g][h]=two&a[b][i]=three',
         result: {
@@ -122,6 +206,8 @@ const TEST_CASES: TestCase[] = [
             foo: ['a', 'b', [['c']]]
         }
     },
+
+    // mixed encoding
     {
         input: 'foo%20bar%5Bbaz%5D=%20',
         result: {
@@ -146,6 +232,9 @@ const TEST_CASES: TestCase[] = [
             }
         }
     },
+
+    // errors
+    // type conflicts
     {
         input: [
             ['foo[bar]', 'object'],
@@ -178,6 +267,8 @@ const TEST_CASES: TestCase[] = [
             error: 'drop',
         }
     },
+
+    // syntax errors
     {
         input: 'foo[=',
         error: SyntaxError,
@@ -205,6 +296,124 @@ const TEST_CASES: TestCase[] = [
     {
         input: 'foo[bar] [baz]=',
         error: SyntaxError,
+    },
+
+    // broken %-encoding
+    {
+        input: 'foo%=',
+        error: URIError,
+    },
+    {
+        input: 'foo=%',
+        error: URIError,
+    },
+    {
+        input: 'foo%FF=',
+        error: URIError,
+    },
+    {
+        input: 'foo=%FF',
+        error: URIError,
+    },
+
+    // error: 'drop'
+    {
+        input: [
+            ['foo', 'A'],
+            ['foo[', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: 'A' },
+    },
+    {
+        input: [
+            ['foo', 'A'],
+            ['foo]', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: 'A' },
+    },
+    {
+        input: [
+            ['foo[]', 'A'],
+            ['foo[[]', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: ['A'] },
+    },
+    {
+        input: [
+            ['foo[]', 'A'],
+            ['foo[]]=', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: ['A'] },
+    },
+    {
+        input: [
+            ['foo[]', 'A'],
+            ['foo[]bar', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: ['A'] },
+    },
+    {
+        input: [
+            ['foo[][baz]', 'A'],
+            ['foo[]bar[baz]', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: [ { baz: 'A' } ] },
+    },
+    {
+        input: [
+            ['foo[bar][baz]', 'A'],
+            ['foo[bar] [baz]', 'B'],
+        ],
+        options: {
+            error: 'drop'
+        },
+        result: { foo: { bar: { baz: 'A' } } },
+    },
+    {
+        input: 'foo=A&foo%=B',
+        options: {
+            error: 'drop'
+        },
+        result: { foo: 'A' },
+    },
+    {
+        input: 'foo=A&foo=%',
+        options: {
+            error: 'drop'
+        },
+        result: { foo: 'A' },
+    },
+    {
+        input: 'foo=A&foo%FF=B',
+        options: {
+            error: 'drop'
+        },
+        result: { foo: 'A' },
+    },
+    {
+        input: 'foo=A&foo=%FF',
+        options: {
+            error: 'drop'
+        },
+        result: { foo: 'A' },
     },
 
     // TODO: more tests, e.g. conflicts, drop error

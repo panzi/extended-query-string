@@ -19,9 +19,9 @@ export class CircularStructureError extends ExtendedQueryStringError {
     }
 }
 
-export class ParserError extends ExtendedQueryStringError {}
+export class ParseError extends ExtendedQueryStringError {}
 
-export class TypeConflict extends ParserError {
+export class TypeConflict extends ParseError {
     key: ParsedKey;
     expectedType: TypeName;
     actualType: TypeName;
@@ -34,7 +34,7 @@ export class TypeConflict extends ParserError {
     }
 }
 
-export class RedefinitionError extends ParserError {
+export class RedefinitionError extends ParseError {
     key: ParsedKey;
 
     constructor(key: ParsedKey, options?: ErrorOptions) {
