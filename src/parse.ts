@@ -11,6 +11,23 @@ import {
 import { parseKey } from "./parseKey.js";
 import { getTypeName, type ParsedKey, type Query } from "./types.js";
 
+function _leafIsUnset(path: ParsedKey, keyIndex: number, current: any): boolean {
+    for (; keyIndex < path.length; ++ keyIndex) {
+        const subKey = path[keyIndex];
+        if (subKey === null) {
+            return true;
+        }
+
+        if (typeof current !== 'object' || current === null || !Object.hasOwn(current, subKey)) {
+            return true;
+        }
+
+        current = current[subKey];
+    }
+
+    return false;
+}
+
 function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'first' | 'last' | 'error'): void {
     let current: any = query;
     for (let keyIndex = 0; keyIndex < path.length - 1; ++ keyIndex) {
@@ -20,15 +37,27 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
             if (!Array.isArray(current)) {
                 throw new TypeConflict(path.slice(0, keyIndex), 'array', getTypeName(current));
             }
-            const next = path[keyIndex + 1] ? Object.create(null) : [];
-            current.push(next);
-            current = next;
+
+            const nextIsArray = path[keyIndex + 1] === null;
+            let next: any;
+            if (current.length &&
+                typeof (next = current[current.length - 1]) === 'object' &&
+                nextIsArray === Array.isArray(next) &&
+                next !== null && 
+                _leafIsUnset(path, keyIndex + 1, next)
+            ) {
+                current = next;
+            } else {
+                next = nextIsArray ? [] : Object.create(null);
+                current.push(next);
+                current = next;
+            }
         } else if (!current || typeof current !== 'object' || Array.isArray(current)) {
             throw new TypeConflict(path.slice(0, keyIndex), 'mapping', getTypeName(current));
         } else if (Object.hasOwn(current, subKey)) {
             current = current[subKey];
         } else {
-            const next = path[keyIndex + 1] ? Object.create(null) : [];
+            const next = path[keyIndex + 1] === null ? [] : Object.create(null);
             current[subKey] = next;
             current = next;
         }

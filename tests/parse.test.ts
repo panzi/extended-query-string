@@ -416,7 +416,83 @@ const TEST_CASES: TestCase[] = [
         result: { foo: 'A' },
     },
 
-    // TODO: more tests, e.g. conflicts, drop error
+    // mappings inside of arrays
+    {
+        input: [
+            ['users[][first_name]', 'John'],
+            ['users[][last_name]', 'Smith'],
+            ['users[][first_name]', 'Max'],
+            ['users[][last_name]', 'Mustermann'],
+        ],
+        result: {
+            users: [
+                {
+                    first_name: 'John',
+                    last_name: 'Smith',
+                },
+                {
+                    first_name: 'Max',
+                    last_name: 'Mustermann',
+                },
+            ]
+        },
+        options: { redefine: 'error' },
+    },
+    {
+        input: [
+            ['users[][name]', 'Alice'],
+            ['users[][contact][][type]', 'email'],
+            ['users[][contact][][value]', 'alice@example.com'],
+            ['users[][contact][][type]', 'tel'],
+            ['users[][contact][][value]', '555 555-5555'],
+            ['users[][name]', 'Bob'],
+            ['users[][contact][][type]', 'email'],
+            ['users[][contact][][value]', 'bob@example.com'],
+        ],
+        result: {
+            users: [
+                {
+                    name: 'Alice',
+                    contact: [
+                        {
+                            type: 'email',
+                            value: 'alice@example.com',
+                        },
+                        {
+                            type: 'tel',
+                            value: '555 555-5555',
+                        },
+                    ]
+                },
+                {
+                    name: 'Bob',
+                    contact: [
+                        {
+                            type: 'email',
+                            value: 'bob@example.com',
+                        },
+                    ]
+                },
+            ]
+        },
+        options: { redefine: 'error' },
+    },
+    {
+        // hmm, I guess to distinguish where the nested array elements should go one would need an array index syntax
+        input: [
+            ['foo[][bar][]', 'A'],
+            ['foo[][bar][]', 'B'],
+            ['foo[][bar][]', 'C'],
+        ],
+        result: {
+            foo: [
+                {
+                    bar: ['A', 'B', 'C']
+                }
+            ]
+        },
+        options: { redefine: 'error' },
+    }
 ];
 
 describe('parse', () => {
