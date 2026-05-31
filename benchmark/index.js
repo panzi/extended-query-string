@@ -3,6 +3,10 @@ import * as exqs from '@panzi/extended-query-string';
 import qs from 'qs';
 import { printTable, RoundedTableStyle } from '@panzi/print-table';
 
+// query-string does not support nested objects!
+// See: https://www.npmjs.com/package/query-string
+// import QueryString from 'query-string';
+
 const stringifyBench = new Bench({ name: 'stringify', time: 500 });
 const parseBench = new Bench({ name: 'parse', time: 500 });
 
@@ -34,6 +38,7 @@ const query = {
 
 stringifyBench.add('extended-query-string', () => exqs.stringify(query));
 stringifyBench.add('qs', () => qs.stringify(query, { arrayFormat: 'brackets' }));
+//stringifyBench.add('query-string', () => QueryString.stringify(query, { arrayFormat: 'bracket' }));
 
 await stringifyBench.run();
 
@@ -41,6 +46,7 @@ const queryString = exqs.stringify(query);
 
 parseBench.add('extended-query-string', () => exqs.parse(queryString));
 parseBench.add('qs', () => qs.parse(queryString));
+//parseBench.add('query-string', () => QueryString.parse(queryString, { arrayFormat: 'bracket' }));
 
 await parseBench.run();
 
