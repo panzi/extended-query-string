@@ -2,6 +2,7 @@ import { Bench, formatNumber, nToMs } from 'tinybench';
 import * as exqs from '@panzi/extended-query-string';
 import qs from 'qs';
 import { printTable, RoundedTableStyle } from '@panzi/print-table';
+import fs from 'fs/promises';
 
 // query-string does not support nested objects!
 // See: https://www.npmjs.com/package/query-string
@@ -50,7 +51,22 @@ parseBench.add('qs', () => qs.parse(queryString));
 
 await parseBench.run();
 
-/** @param {Bench} bench  */
+/**
+ * @typedef {{
+ *  name: string;
+ *  latencyAvg: [string, string, string];
+ *  latencyMed: [string, string, string];
+ *  throughputAvg: [string, string, string];
+ *  throughputMed: [string, string, string];
+ *  samples: string;
+ *  error: string;
+ * }} FormattedResult
+ */
+
+/**
+ * @param {Bench} bench
+ * @returns {FormattedResult[]}
+ */
 function getResults(bench) {
     let maxLatencyAvg = NaN;
     let maxLatencyMed = NaN;
@@ -87,30 +103,30 @@ function getResults(bench) {
 
         return result.state === 'aborted-with-statistics' || result.state === 'completed' ? {
             name,
-            latencyAvg: `${formatNumber(nToMs(result.latency.mean))} \xb1 ${result.latency.rme.toFixed(2).padStart(3)}%  ${(100 * result.latency.mean / maxLatencyAvg).toFixed(0).padStart(3)}%`,
-            latencyMed: `${formatNumber(nToMs(result.latency.p50))} \xb1 ${formatNumber(nToMs(result.latency.mad)).padStart(3)}  ${(100 * result.latency.p50 / maxLatencyMed).toFixed(0).padStart(3)}%`,
-            throughputAvg: `${Math.round(result.throughput.mean).toString()} \xb1 ${result.throughput.rme.toFixed(2).padStart(3)}%  ${(100 * result.throughput.mean / maxThroughputAvg).toFixed(0).padStart(3)}%`,
-            throughputMed: `${Math.round(result.throughput.p50).toString()} \xb1 ${Math.round(result.throughput.mad).toString().padStart(3)}  ${(100 * result.throughput.p50 / maxThroughputMed).toFixed(0).padStart(3)}%`,
-            samples: result.latency.samplesCount,
+            latencyAvg: [formatNumber(nToMs(result.latency.mean)), `\xb1 ${result.latency.rme.toFixed(2).padStart(3)}%`, `${(100 * result.latency.mean / maxLatencyAvg).toFixed(0).padStart(3)}%`],
+            latencyMed: [formatNumber(nToMs(result.latency.p50)), `\xb1 ${formatNumber(nToMs(result.latency.mad)).padStart(3)}`, `${(100 * result.latency.p50 / maxLatencyMed).toFixed(0).padStart(3)}%`],
+            throughputAvg: [String(Math.round(result.throughput.mean)), `\xb1 ${result.throughput.rme.toFixed(2).padStart(3)}%`, `${(100 * result.throughput.mean / maxThroughputAvg).toFixed(0).padStart(3)}%`],
+            throughputMed: [String(Math.round(result.throughput.p50)), `\xb1 ${formatNumber(Math.round(result.throughput.mad)).padStart(3)}`, `${(100 * result.throughput.p50 / maxThroughputMed).toFixed(0).padStart(3)}%`],
+            samples: String(result.latency.samplesCount),
             error: '',
         } :
         result.state !== 'errored' ? {
             name,
-            latencyAvg: '',
-            latencyMed: '',
-            throughputAvg: '',
-            throughputMed: '',
+            latencyAvg: ['','',''],
+            latencyMed: ['','',''],
+            throughputAvg: ['','',''],
+            throughputMed: ['','',''],
             samples: '',
             error: '',
         } :
         {
             name,
-            latencyAvg: '',
-            latencyMed: '',
-            throughputAvg: '',
-            throughputMed: '',
+            latencyAvg: ['','',''],
+            latencyMed: ['','',''],
+            throughputAvg: ['','',''],
+            throughputMed: ['','',''],
             samples: '',
-            error: result.error,
+            error: result.error.stack || String(result.error),
         }
     });
 }
@@ -121,9 +137,79 @@ const header = [
     'Samples',
 ];
 
+/**
+ * @param {[string, string, string]} res 
+ */
+function joinRes(res) {
+    return `${res[0]} ${res[1]}  ${res[2]}`;
+}
+
+/**
+ * @param {FormattedResult[]} result 
+ * @returns {string[][]}
+ */
+function makeRows(result) {
+    return result.map(res => [res.name, joinRes(res.latencyAvg), joinRes(res.latencyMed), joinRes(res.throughputAvg), joinRes(res.throughputMed), res.samples]);
+}
+
+/** @type {{[char: string]: string}} */
+const HTML_CHARS = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;',
+};
+
+/**
+ * @param {string} text 
+ * @returns {string}
+ */
+function escapeHtml(text) {
+    return text.replace(/[<>&"]/g, ch => HTML_CHARS[ch]);
+}
+
+/**
+ * @param {FormattedResult[]} result 
+ * @param {string[]} buf 
+ * @returns {void}
+ */
+function makeHtmlTable(result, buf) {
+    buf.push(
+        '<table>\n',
+        '<thead>\n',
+        '<tr>'
+    );
+    buf.push('<th>', escapeHtml(header[0]), '</th>');
+    buf.push('<th colspan="3">', escapeHtml(header[1]), '</th>');
+    buf.push('<th colspan="3">', escapeHtml(header[2]), '</th>');
+    buf.push('<th colspan="3">', escapeHtml(header[3]), '</th>');
+    buf.push('<th colspan="3">', escapeHtml(header[4]), '</th>');
+    buf.push('<th>', escapeHtml(header[5]), '</th>');
+    buf.push(
+        '</tr>\n',
+        '</thead>\n',
+        '<tbody>\n'
+    );
+    for (const res of result) {
+        buf.push('<tr>');
+        buf.push('<td>', escapeHtml(res.name), '</td>');
+        for (const cell of [...res.latencyAvg, ...res.latencyMed, ...res.throughputAvg, ...res.throughputMed, res.samples]) {
+            buf.push('<td align="right">', escapeHtml(cell), '</td>');
+        }
+        buf.push('</tr>\n');
+    }
+    buf.push(
+        '</tbody>\n',
+        '</table>\n'
+    );
+}
+
+const stringifyResult = getResults(stringifyBench);
+const parseResult = getResults(parseBench);
+
 console.log(stringifyBench.name);
 printTable(
-    getResults(stringifyBench).map(res => [res.name, res.latencyAvg, res.latencyMed, res.throughputAvg, res.throughputMed, res.samples]),
+    makeRows(stringifyResult),
     {
         header,
         alignment: '><<<<<',
@@ -133,10 +219,25 @@ printTable(
 console.log();
 console.log(parseBench.name);
 printTable(
-    getResults(parseBench).map(res => [res.name, res.latencyAvg, res.latencyMed, res.throughputAvg, res.throughputMed, res.samples]),
+    makeRows(parseResult),
     {
         header,
         alignment: '><<<<<',
         style: RoundedTableStyle
     }
 );
+
+/** @type {string[]} */
+const buf = [
+    'micro benchmark\n',
+    '===============\n',
+    '\n',
+];
+
+buf.push('### stringify\n');
+makeHtmlTable(stringifyResult, buf);
+buf.push('\n');
+buf.push('### parse\n');
+makeHtmlTable(parseResult, buf);
+
+await fs.writeFile('README.md', buf.join(''));
