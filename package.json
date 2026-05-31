@@ -1,5 +1,5 @@
 {
-  "name": "extended-query-string",
+  "name": "@panzi/extended-query-string",
   "version": "1.0.0",
   "description": "Parse and create extended query strings (like in Rails or the extended option in express)",
   "keywords": [
