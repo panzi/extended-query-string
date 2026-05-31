@@ -8,6 +8,7 @@ on:
     - '**'
     paths-ignore:
     - 'test/**'
+    - 'benchmark/**'
     - 'jest.config.js'
     - '.github/workflows/test.yml'
 
