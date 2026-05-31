@@ -103,10 +103,26 @@ function getResults(bench) {
 
         return result.state === 'aborted-with-statistics' || result.state === 'completed' ? {
             name,
-            latencyAvg: [formatNumber(nToMs(result.latency.mean)), `\xb1 ${result.latency.rme.toFixed(2).padStart(3)}%`, `${(100 * result.latency.mean / maxLatencyAvg).toFixed(0).padStart(3)}%`],
-            latencyMed: [formatNumber(nToMs(result.latency.p50)), `\xb1 ${formatNumber(nToMs(result.latency.mad)).padStart(3)}`, `${(100 * result.latency.p50 / maxLatencyMed).toFixed(0).padStart(3)}%`],
-            throughputAvg: [String(Math.round(result.throughput.mean)), `\xb1 ${result.throughput.rme.toFixed(2).padStart(3)}%`, `${(100 * result.throughput.mean / maxThroughputAvg).toFixed(0).padStart(3)}%`],
-            throughputMed: [String(Math.round(result.throughput.p50)), `\xb1 ${formatNumber(Math.round(result.throughput.mad)).padStart(3)}`, `${(100 * result.throughput.p50 / maxThroughputMed).toFixed(0).padStart(3)}%`],
+            latencyAvg: [
+                formatNumber(nToMs(result.latency.mean)),
+                `\xb1\xa0${result.latency.rme.toFixed(2).padStart(3)}%`,
+                `${(100 * result.latency.mean / maxLatencyAvg).toFixed(0).padStart(3)}%`,
+            ],
+            latencyMed: [
+                formatNumber(nToMs(result.latency.p50)),
+                `\xb1\xa0${formatNumber(nToMs(result.latency.mad)).padStart(3)}`,
+                `${(100 * result.latency.p50 / maxLatencyMed).toFixed(0).padStart(3)}%`,
+            ],
+            throughputAvg: [
+                String(Math.round(result.throughput.mean)),
+                `\xb1\xa0${result.throughput.rme.toFixed(2).padStart(3)}%`,
+                `${(100 * result.throughput.mean / maxThroughputAvg).toFixed(0).padStart(3)}%`,
+            ],
+            throughputMed: [
+                String(Math.round(result.throughput.p50)),
+                `\xb1\xa0${formatNumber(Math.round(result.throughput.mad)).padStart(3)}`,
+                `${(100 * result.throughput.p50 / maxThroughputMed).toFixed(0).padStart(3)}%`,
+            ],
             samples: String(result.latency.samplesCount),
             error: '',
         } :
@@ -194,7 +210,7 @@ function makeHtmlTable(result, buf) {
         buf.push('<tr>');
         buf.push('<td>', escapeHtml(res.name), '</td>');
         for (const cell of [...res.latencyAvg, ...res.latencyMed, ...res.throughputAvg, ...res.throughputMed, res.samples]) {
-            buf.push('<td align="right">', escapeHtml(cell), '</td>');
+            buf.push('<td align="right">', escapeHtml(cell.trim()), '</td>');
         }
         buf.push('</tr>\n');
     }

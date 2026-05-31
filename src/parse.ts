@@ -43,7 +43,7 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
             if (current.length &&
                 typeof (next = current[current.length - 1]) === 'object' &&
                 nextIsArray === Array.isArray(next) &&
-                next !== null && 
+                next !== null &&
                 _leafIsUnset(path, keyIndex + 1, next)
             ) {
                 current = next;
