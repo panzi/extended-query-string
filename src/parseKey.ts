@@ -1,13 +1,14 @@
 import { KeySyntaxError } from "./errors.js";
 import type { ParsedKey } from "./types.js";
 
-// RegExp is faster in Firefox, manual iterating is faster in Brave.
-// I don't know what is faster on JavaScriptCore.
+// RegExp is faster in Firefox and Safari, manual iterating is faster in Brave.
 // /^[0-9]+$/ is faster than /^\d+$/
 // i < text.length is faster than n = text.length; i < n
 // See: https://jsbm.dev/myojw6PWlWS3N
 const INT_PATTERN: { test(text: string): boolean } = (
-    typeof navigator !== 'undefined' && navigator?.userAgent?.includes?.('Gecko/') ?
+    (typeof navigator !== 'undefined' && /\b(Gecko|Safari)\//.test(navigator?.userAgent ?? '')) ||
+    // @ts-ignore
+    (typeof process !== 'undefined' && process?.versions?.bun) ?
         /^[0-9]+$/ : {
         test(text: string): boolean {
             if (!text.length) return false;
