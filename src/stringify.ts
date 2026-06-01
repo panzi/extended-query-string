@@ -56,37 +56,44 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
 
             visited.set(value, path.slice());
 
-            if (Array.isArray(value) || value instanceof Set) {
-                path.push(null);
-                for (const item of value) {
-                    stringify(path, item);
+            const lastIndex = path.length;
+            path.push(null);
+            if (Array.isArray(value)) {
+                for (let index = 0; index < value.length; ++ index) {
+                    path[lastIndex] = index;
+                    stringify(path, value[index]);
                 }
-                path.pop();
+            } else if (value instanceof Set) {
+                let index = 0;
+                for (const item of value) {
+                    path[lastIndex] = index;
+                    stringify(path, item);
+                    ++ index;
+                }
             } else if (value instanceof Map) {
                 for (const key of value.keys()) {
                     const strKey = String(key);
                     // 2 strKey.includes() calls are much faster than one /[\[\]]/.test()
-                    if (strKey.includes('[') || strKey.includes(']') || path.length && !strKey) {
+                    if (strKey.includes('[') || strKey.includes(']') || (lastIndex && !strKey)) {
                         if (dropErrors) return;
                         throw new IllegalKeyError(strKey);
                     }
-                    path.push(strKey);
+                    path[lastIndex] = strKey;
                     stringify(path, value.get(key));
-                    path.pop();
                 }
             } else {
                 for (const key in value) {
                     if (Object.hasOwn(value, key)) {
-                        if (key.includes('[') || key.includes(']') || path.length && !key) {
+                        if (key.includes('[') || key.includes(']') || lastIndex && (key === null || key === '')) {
                             if (dropErrors) return;
                             throw new IllegalKeyError(key);
                         }
-                        path.push(key);
+                        path[lastIndex] = key;
                         stringify(path, (value as any)[key]);
-                        path.pop();
                     }
                 }
             }
+            path.pop();
 
             visited.delete(value);
         } else if (value !== undefined) {
@@ -103,7 +110,7 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
             buf.push(encodeURIComponent(path[0] ?? ''));
             for (let index = 1; index < path.length; ++index) {
                 const key = path[index];
-                if (!key) {
+                if (key === null) {
                     buf.push('%5B%5D');
                 } else {
                     buf.push('%5B', encodeURIComponent(key), '%5D');

@@ -6,7 +6,7 @@ export type Query = Record<string, unknown>;
 /**
  * `null` means that this position is an array.
  */
-export type ParsedKey = (string|null)[];
+export type ParsedKey = (string|number|null)[];
 
 /**
  * Helper type to debug errors.

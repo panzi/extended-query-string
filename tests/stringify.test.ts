@@ -41,7 +41,7 @@ const TEST_CASES: TestCase[] = [
                 bla: ['x', 'y']
             }))
         })),
-        result: 'foo=123&bar%5B%5D=a&bar%5B%5D=b&bar%5B%5D=c&baz%5Bbla%5D%5B%5D=x&baz%5Bbla%5D%5B%5D=y'
+        result: 'foo=123&bar%5B0%5D=a&bar%5B1%5D=b&bar%5B2%5D=c&baz%5Bbla%5D%5B0%5D=x&baz%5Bbla%5D%5B1%5D=y'
     },
     {
         input: circular,
@@ -73,6 +73,10 @@ const TEST_CASES: TestCase[] = [
         result: 'foo%5Bbar%5D=baz',
     },
     {
+        input: { foo: ['a', 'b', ['c']] },
+        result: 'foo%5B0%5D=a&foo%5B1%5D=b&foo%5B2%5D%5B0%5D=c'
+    },
+    {
         input: {
             '': ''
         },
@@ -82,7 +86,7 @@ const TEST_CASES: TestCase[] = [
         input: {
             '': ['']
         },
-        result: '%5B%5D=',
+        result: '%5B0%5D=',
     },
     {
         input: {

@@ -38,7 +38,7 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
                 throw new TypeConflict(path.slice(0, keyIndex), 'array', getTypeName(current));
             }
 
-            const nextIsArray = path[keyIndex + 1] === null;
+            const nextIsArray = typeof path[keyIndex + 1] !== 'string';
             let next: any;
             if (current.length &&
                 typeof (next = current[current.length - 1]) === 'object' &&
@@ -52,12 +52,22 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
                 current.push(next);
                 current = next;
             }
+        } else if (typeof subKey === 'number') {
+            if (!Array.isArray(current)) {
+                throw new TypeConflict(path.slice(0, keyIndex), 'array', getTypeName(current));
+            }
+
+            if (Object.hasOwn(current, subKey)) {
+                current = current[subKey];
+            } else {
+                current = current[subKey] = typeof path[keyIndex + 1] !== 'string' ? [] : Object.create(null);
+            }
         } else if (!current || typeof current !== 'object' || Array.isArray(current)) {
             throw new TypeConflict(path.slice(0, keyIndex), 'mapping', getTypeName(current));
         } else if (Object.hasOwn(current, subKey)) {
             current = current[subKey];
         } else {
-            const next = path[keyIndex + 1] === null ? [] : Object.create(null);
+            const next = typeof path[keyIndex + 1] !== 'string' ? [] : Object.create(null);
             current[subKey] = next;
             current = next;
         }
@@ -70,6 +80,22 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
         }
 
         current.push(value);
+    } else if (typeof subKey === 'number') {
+        if (!Array.isArray(current)) {
+            throw new TypeConflict(path.slice(0, path.length - 1), 'array', getTypeName(current));
+        }
+
+        if (Object.hasOwn(current, subKey)) {
+            if (redefine === 'error') {
+                throw new RedefinitionError(path);
+            }
+
+            if (redefine === 'last') {
+                current[subKey] = value;
+            }
+        } else {
+            current[subKey] = value;
+        }
     } else if (!current || typeof current !== 'object' || Array.isArray(current)) {
         throw new TypeConflict(path.slice(0, path.length - 1), 'mapping', getTypeName(current));
     } else if (Object.hasOwn(current, subKey)) {

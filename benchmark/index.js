@@ -45,6 +45,11 @@ await stringifyBench.run();
 
 const queryString = exqs.stringify(query);
 
+//await fs.writeFile('tmp/qs.json', JSON.stringify(qs.parse(queryString), null, 4));
+//await fs.writeFile('tmp/exqs.json', JSON.stringify(exqs.parse(queryString), null, 4));
+
+//console.log(assert.deepEqual(JSON.stringify(exqs.parse(queryString)), JSON.stringify(qs.parse(queryString))));
+
 parseBench.add('extended-query-string', () => exqs.parse(queryString));
 parseBench.add('qs', () => qs.parse(queryString));
 //parseBench.add('query-string', () => QueryString.parse(queryString, { arrayFormat: 'bracket' }));

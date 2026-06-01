@@ -39,6 +39,23 @@ const TEST_CASES: TestCase[] = [
         result: 'foo[bar][]',
     },
 
+    {
+        input: ['', 1],
+        result: '[1]',
+    },
+    {
+        input: ['foo', 0, 1],
+        result: 'foo[0][1]',
+    },
+    {
+        input: ['foo', 2, 'bar'],
+        result: 'foo[2][bar]',
+    },
+    {
+        input: ['foo', 'bar', 3],
+        result: 'foo[bar][3]',
+    },
+
     // technically incorrect inputs
     {
         input: [],
@@ -47,6 +64,10 @@ const TEST_CASES: TestCase[] = [
     {
         input: [null],
         result: '',
+    },
+    {
+        input: [1],
+        result: '1',
     },
 ];
 

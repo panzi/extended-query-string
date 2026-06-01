@@ -15,9 +15,6 @@ parser option of [expressjs](https://expressjs.com/),
 Features, some of which making it different to these:
 
 * Simpler code with zero dependencies. (Except for dev dependencies, of course.)
-* Simpler supported syntax. E.g. in `foo[1]` the `1` is still a mapping key and
-  not an array index. Only `[]` with nothing between the brackets refers to an
-  array key.
 * Strict parsing that throws exceptions if there is:
 
   * Illegal syntax in keys
@@ -34,6 +31,7 @@ Features, some of which making it different to these:
 * Uses `Object.create(null)` for parsed objects that really only have the
   parsed properties. This alone would already prevent prototype pollution, though
   `Object.hasOwn()` is used anyway.
+* Faster in my very limited [micro-benchmark](benchmark/README.md).
 
 ### Query String Example
 

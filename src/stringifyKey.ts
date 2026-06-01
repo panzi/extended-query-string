@@ -9,7 +9,7 @@ export function stringifyKey(path: Readonly<ParsedKey>): string {
     const buf = [path[0] ?? ''];
     for (let index = 1; index < path.length; ++index) {
         const key = path[index];
-        if (!key) {
+        if (key === null) {
             buf.push('[]');
         } else {
             buf.push('[', encodeURIComponent(key), ']');
