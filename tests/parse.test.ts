@@ -478,7 +478,6 @@ const TEST_CASES: TestCase[] = [
         options: { redefine: 'error' },
     },
     {
-        // hmm, I guess to distinguish where the nested array elements should go one would need an array index syntax
         input: [
             ['foo[][bar][]', 'A'],
             ['foo[][bar][]', 'B'],
@@ -492,7 +491,98 @@ const TEST_CASES: TestCase[] = [
             ]
         },
         options: { redefine: 'error' },
-    }
+    },
+
+    {
+        input: [
+            ['users[0][first_name]', 'John'],
+            ['users[1][first_name]', 'Max'],
+            ['users[0][last_name]', 'Smith'],
+            ['users[1][last_name]', 'Mustermann'],
+        ],
+        result: {
+            users: [
+                {
+                    first_name: 'John',
+                    last_name: 'Smith',
+                },
+                {
+                    first_name: 'Max',
+                    last_name: 'Mustermann',
+                },
+            ]
+        },
+        options: { redefine: 'error' },
+    },
+    {
+        input: [
+            ['users[0][name]', 'Alice'],
+            ['users[0][contact][0][type]', 'email'],
+            ['users[0][contact][1][type]', 'tel'],
+            ['users[0][contact][0][value]', 'alice@example.com'],
+            ['users[0][contact][1][value]', '555 555-5555'],
+            ['users[1][name]', 'Bob'],
+            ['users[1][contact][0][type]', 'email'],
+            ['users[1][contact][0][value]', 'bob@example.com'],
+        ],
+        result: {
+            users: [
+                {
+                    name: 'Alice',
+                    contact: [
+                        {
+                            type: 'email',
+                            value: 'alice@example.com',
+                        },
+                        {
+                            type: 'tel',
+                            value: '555 555-5555',
+                        },
+                    ]
+                },
+                {
+                    name: 'Bob',
+                    contact: [
+                        {
+                            type: 'email',
+                            value: 'bob@example.com',
+                        },
+                    ]
+                },
+            ]
+        },
+        options: { redefine: 'error' },
+    },
+    {
+        input: [
+            ['foo[0][bar][0]', 'A'],
+            ['foo[0][bar][1]', 'B'],
+            ['foo[0][bar][2]', 'C'],
+        ],
+        result: {
+            foo: [
+                {
+                    bar: ['A', 'B', 'C']
+                }
+            ]
+        },
+        options: { redefine: 'error' },
+    },
+    {
+        input: [
+            ['foo[0][bar][0]', 'A'],
+            ['foo[1][bar][0]', 'B'],
+            ['foo[2][bar][0]', 'C'],
+        ],
+        result: {
+            foo: [
+                { bar: ['A'] },
+                { bar: ['B'] },
+                { bar: ['C'] },
+            ]
+        },
+        options: { redefine: 'error' },
+    },
 ];
 
 describe('parse', () => {
