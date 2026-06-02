@@ -8,9 +8,6 @@ import fs from 'fs/promises';
 // See: https://www.npmjs.com/package/query-string
 // import QueryString from 'query-string';
 
-const stringifyBench = new Bench({ name: 'stringify', time: 500 });
-const parseBench = new Bench({ name: 'parse', time: 500 });
-
 /** @type {any} */
 let deep_nesting = {};
 for (let i = 0; i < 32; ++ i) {
@@ -37,24 +34,39 @@ const query = {
     }
 };
 
-stringifyBench.add('extended-query-string', () => exqs.stringify(query));
-stringifyBench.add('qs', () => qs.stringify(query, { arrayFormat: 'brackets' }));
+const stringifyBracketsBench = new Bench({ name: 'stringify brackets', time: 500 });
+const stringifyIndicesBench = new Bench({ name: 'stringify indices', time: 500 });
+const parseBracketsBench = new Bench({ name: 'parse brackets', time: 500 });
+const parseIndicesBench = new Bench({ name: 'parse indices', time: 500 });
+
+/**
+ * @type {Bench[]}
+ */
+const benches = [stringifyBracketsBench, stringifyIndicesBench, parseBracketsBench, parseIndicesBench];
+
+stringifyBracketsBench.add('extended-query-string', () => exqs.stringify(query, { arrayFormat: 'brackets' }));
+stringifyBracketsBench.add('qs', () => qs.stringify(query, { arrayFormat: 'brackets' }));
 //stringifyBench.add('query-string', () => QueryString.stringify(query, { arrayFormat: 'bracket' }));
 
-await stringifyBench.run();
 
-const queryString = exqs.stringify(query);
+stringifyIndicesBench.add('extended-query-string', () => exqs.stringify(query, { arrayFormat: 'indices' }));
+stringifyIndicesBench.add('qs', () => qs.stringify(query, { arrayFormat: 'indices' }));
+//stringifyIndices.add('query-string', () => QueryString.stringify(query, { arrayFormat: 'indices' }));
 
-//await fs.writeFile('tmp/qs.json', JSON.stringify(qs.parse(queryString), null, 4));
-//await fs.writeFile('tmp/exqs.json', JSON.stringify(exqs.parse(queryString), null, 4));
+const bracketsQueryString = exqs.stringify(query, { arrayFormat: 'brackets' });
+const indicesQueryString = exqs.stringify(query, { arrayFormat: 'indices' });
 
-//console.log(assert.deepEqual(JSON.stringify(exqs.parse(queryString)), JSON.stringify(qs.parse(queryString))));
+parseBracketsBench.add('extended-query-string', () => exqs.parse(bracketsQueryString));
+parseBracketsBench.add('qs', () => qs.parse(bracketsQueryString));
+//parseBracketsBench.add('query-string', () => QueryString.parse(bracketsQueryString, { arrayFormat: 'bracket' }));
 
-parseBench.add('extended-query-string', () => exqs.parse(queryString));
-parseBench.add('qs', () => qs.parse(queryString));
-//parseBench.add('query-string', () => QueryString.parse(queryString, { arrayFormat: 'bracket' }));
+parseIndicesBench.add('extended-query-string', () => exqs.parse(indicesQueryString));
+parseIndicesBench.add('qs', () => qs.parse(indicesQueryString));
+//parseIndicesBench.add('query-string', () => QueryString.parse(indicesQueryString, { arrayFormat: 'indices' }));
 
-await parseBench.run();
+for (const bench of benches) {
+    await bench.run();
+}
 
 /**
  * @typedef {{
@@ -110,22 +122,22 @@ function getResults(bench) {
             name,
             latencyAvg: [
                 formatNumber(nToMs(result.latency.mean)),
-                `\xb1\xa0${result.latency.rme.toFixed(2).padStart(3)}%`,
+                `\xb1\xa0${result.latency.rme.toFixed(2).padStart(4, '\xa0')}%`,
                 `${(100 * result.latency.mean / maxLatencyAvg).toFixed(0).padStart(3)}%`,
             ],
             latencyMed: [
                 formatNumber(nToMs(result.latency.p50)),
-                `\xb1\xa0${formatNumber(nToMs(result.latency.mad)).padStart(3)}`,
+                `\xb1\xa0${formatNumber(nToMs(result.latency.mad)).padStart(4, '\xa0')}`,
                 `${(100 * result.latency.p50 / maxLatencyMed).toFixed(0).padStart(3)}%`,
             ],
             throughputAvg: [
                 String(Math.round(result.throughput.mean)),
-                `\xb1\xa0${result.throughput.rme.toFixed(2).padStart(3)}%`,
+                `\xb1\xa0${result.throughput.rme.toFixed(2).padStart(4, '\xa0')}%`,
                 `${(100 * result.throughput.mean / maxThroughputAvg).toFixed(0).padStart(3)}%`,
             ],
             throughputMed: [
                 String(Math.round(result.throughput.p50)),
-                `\xb1\xa0${formatNumber(Math.round(result.throughput.mad)).padStart(3)}`,
+                `\xb1\xa0${formatNumber(Math.round(result.throughput.mad)).padStart(6, '\xa0')}`,
                 `${(100 * result.throughput.p50 / maxThroughputMed).toFixed(0).padStart(3)}%`,
             ],
             samples: String(result.latency.samplesCount),
@@ -215,7 +227,7 @@ function makeHtmlTable(result, buf) {
         buf.push('<tr>');
         buf.push('<td>', escapeHtml(res.name), '</td>');
         for (const cell of [...res.latencyAvg, ...res.latencyMed, ...res.throughputAvg, ...res.throughputMed, res.samples]) {
-            buf.push('<td align="right">', escapeHtml(cell.trim()), '</td>');
+            buf.push('<td align="right">', escapeHtml(cell.trim().replace(/\xa0\xa0+/g, '\xa0')), '</td>');
         }
         buf.push('</tr>\n');
     }
@@ -225,40 +237,40 @@ function makeHtmlTable(result, buf) {
     );
 }
 
-const stringifyResult = getResults(stringifyBench);
-const parseResult = getResults(parseBench);
+/**
+ * @typedef {{ name: string, results: FormattedResult[] }} FormattedResults
+ */
 
-console.log(stringifyBench.name);
-printTable(
-    makeRows(stringifyResult),
-    {
-        header,
-        alignment: '><<<<<',
-        style: RoundedTableStyle
+/** @type {FormattedResults[]} */
+const results = benches.map(bench => ({ name: bench.name ?? '', results: getResults(bench) }));
+
+let first = true;
+for (const result of results) {
+    if (first) {
+        first = false;
+    } else {
+        console.log();
     }
-);
-console.log();
-console.log(parseBench.name);
-printTable(
-    makeRows(parseResult),
-    {
-        header,
-        alignment: '><<<<<',
-        style: RoundedTableStyle
-    }
-);
+    console.log(result.name);
+    printTable(
+        makeRows(result.results),
+        {
+            header,
+            alignment: '><<<<<',
+            style: RoundedTableStyle
+        }
+    );
+}
 
 /** @type {string[]} */
 const buf = [
     'micro benchmark\n',
     '===============\n',
-    '\n',
 ];
-
-buf.push('### stringify\n');
-makeHtmlTable(stringifyResult, buf);
-buf.push('\n');
-buf.push('### parse\n');
-makeHtmlTable(parseResult, buf);
+for (const result of results) {
+    buf.push('\n');
+    buf.push('### ', result.name, '\n');
+    makeHtmlTable(result.results, buf);
+}
 
 await fs.writeFile('README.md', buf.join(''));

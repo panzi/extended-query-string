@@ -24,6 +24,44 @@ export type StringifyOptions = {
      * @default false
      */
     plus?: boolean;
+
+    /**
+     * Array syntax.
+     * 
+     * * `'brackets'` - emit empty brackets, e.g. `foo[]=a&foo[]=b`
+     * * `'indices'` - emit indices, e.g. `foo[0]=a&foo[1]=b`
+     * 
+     * The `'brackets'` option has ambiguity for nested arrays. E.g.
+     * this:
+     * 
+     * ```JSON
+     * {
+     *     "foo": [
+     *         ["a"],
+     *         ["b"],
+     *     ]
+     * }
+     * ```
+     * 
+     * And this:
+     * 
+     * ```JSON
+     * {
+     *     "foo": [
+     *         ["a", "b"],
+     *     ]
+     * }
+     * ```
+     * 
+     * Would both become:
+     * 
+     * ```
+     * foo[][]=a&foo[][]=b
+     * ```
+     * 
+     * @default 'indices'
+     */
+    arrayFormat?: 'brackets'|'indices';
 };
 
 /**
@@ -42,6 +80,7 @@ export type StringifyOptions = {
  */
 export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, options?: StringifyOptions): string {
     const dropErrors = options?.error === 'drop';
+    const arrayIndices = options?.arrayFormat !== 'brackets';
     const plus = options?.plus ?? false;
     const visited = new WeakMap<object, ParsedKey>();
     const buf: ParsedKey = [];
@@ -59,16 +98,28 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
             const lastIndex = path.length;
             path.push(null);
             if (Array.isArray(value)) {
-                for (let index = 0; index < value.length; ++ index) {
-                    path[lastIndex] = index;
-                    stringify(path, value[index]);
+                if (arrayIndices) {
+                    for (let index = 0; index < value.length; ++ index) {
+                        path[lastIndex] = index;
+                        stringify(path, value[index]);
+                    }
+                } else {
+                    for (let index = 0; index < value.length; ++ index) {
+                        stringify(path, value[index]);
+                    }
                 }
             } else if (value instanceof Set) {
-                let index = 0;
-                for (const item of value) {
-                    path[lastIndex] = index;
-                    stringify(path, item);
-                    ++ index;
+                if (arrayIndices) {
+                    let index = 0;
+                    for (const item of value) {
+                        path[lastIndex] = index;
+                        stringify(path, item);
+                        ++ index;
+                    }
+                } else {
+                    for (const item of value) {
+                        stringify(path, item);
+                    }
                 }
             } else if (value instanceof Map) {
                 for (const key of value.keys()) {
