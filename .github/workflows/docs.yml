@@ -11,6 +11,7 @@ on:
     - 'benchmark/**'
     - 'jest.config.js'
     - '.github/workflows/test.yml'
+    - '.gitignore'
 
 jobs:
   docs:
