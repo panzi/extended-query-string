@@ -14,7 +14,7 @@ for (let i = 0; i < 32; ++ i) {
     deep_nesting = { [i]: deep_nesting };
 }
 
-/** @type {import('@panzi/extended-query-string').Query} */
+/** @type {exqs.Query} */
 const query = {
     foo: {
         bar: {
@@ -34,38 +34,139 @@ const query = {
     }
 };
 
-const stringifyBracketsBench = new Bench({ name: 'stringify brackets', time: 500 });
-const stringifyIndicesBench = new Bench({ name: 'stringify indices', time: 500 });
-const parseBracketsBench = new Bench({ name: 'parse brackets', time: 500 });
-const parseIndicesBench = new Bench({ name: 'parse indices', time: 500 });
+/** @type {exqs.Query} */
+const longArrayShortValues = {
+    // @ts-ignore
+    foo: Array.from(Array(2048).keys()),
+};
+
+/** @type {exqs.Query} */
+const longArrayBigValues = {
+    // @ts-ignore
+    foo: Array.from(Array(1024).keys().map(index => Array(100).keys().reduce((o, v) => {
+        o[`key${v}`] = `value ${v}`;
+        return o;
+    }, {
+        index,
+        deep_nesting,
+        LONG_STRING: "abdefghijklmnopqrstuvwxyz".repeat(16),
+    }))),
+};
+
+/**
+ * @type {{
+ *   name: string,
+ *   query: exqs.Query,
+ * }[]}
+ */
+const TEST_DATA = [
+    {
+        name: 'Tiny',
+        query: {
+            foo: {
+                bar: 'baz',
+            }
+        }
+    },
+    {
+        name: 'Somewhat Complex',
+        query,
+    },
+    {
+        name: 'Long array with short values',
+        query: longArrayShortValues,
+    },
+    {
+        name: 'Long array with big values',
+        query: longArrayBigValues,
+    },
+];
+
+
+/**
+ * @typedef {'brackets'|'indices'} ArrayFormat
+ */
+
+/**
+ * @param {(query: exqs.Query, options: { readonly arrayFormat: ArrayFormat}) => string} func 
+ * @param {exqs.Query} query 
+ * @param {{ arrayFormat: ArrayFormat}} options 
+ */
+function makeStringify(func, query, options) {
+    return () => func(query, options);
+}
+
+/**
+ * @template O
+ * @param {(queryString: string, options?: O) => any} func 
+ * @param {string} queryString 
+ * @param {O=} options
+ */
+function makeParse(func, queryString, options) {
+    return () => func(queryString, options);
+}
+
+/**
+ * @type {ArrayFormat[]}
+ */
+const ARRAY_FORMATS = ['brackets', 'indices'];
 
 /**
  * @type {Bench[]}
  */
-const benches = [stringifyBracketsBench, stringifyIndicesBench, parseBracketsBench, parseIndicesBench];
+const benches = [];
 
-stringifyBracketsBench.add('extended-query-string', () => exqs.stringify(query, { arrayFormat: 'brackets' }));
-stringifyBracketsBench.add('qs', () => qs.stringify(query, { arrayFormat: 'brackets' }));
-//stringifyBench.add('query-string', () => QueryString.stringify(query, { arrayFormat: 'bracket' }));
+const time = 500;
 
+for (const { name, query } of TEST_DATA) {
+    for (const arrayFormat of ARRAY_FORMATS) {
+        const sBench = new Bench({ name: `Stringify ${name} (${arrayFormat})`, time, warmup: true });
+        const pBench = new Bench({ name: `Parse ${name} (${arrayFormat})`, time, warmup: true });
 
-stringifyIndicesBench.add('extended-query-string', () => exqs.stringify(query, { arrayFormat: 'indices' }));
-stringifyIndicesBench.add('qs', () => qs.stringify(query, { arrayFormat: 'indices' }));
-//stringifyIndices.add('query-string', () => QueryString.stringify(query, { arrayFormat: 'indices' }));
+        sBench.add('extended-query-string', makeStringify(exqs.stringify, query, { arrayFormat }));
+        sBench.add('qs', makeStringify(qs.stringify, query, { arrayFormat }));
 
-const bracketsQueryString = exqs.stringify(query, { arrayFormat: 'brackets' });
-const indicesQueryString = exqs.stringify(query, { arrayFormat: 'indices' });
+        const queryString = exqs.stringify(query, { arrayFormat });
 
-parseBracketsBench.add('extended-query-string', () => exqs.parse(bracketsQueryString));
-parseBracketsBench.add('qs', () => qs.parse(bracketsQueryString));
-//parseBracketsBench.add('query-string', () => QueryString.parse(bracketsQueryString, { arrayFormat: 'bracket' }));
+        pBench.add('extended-query-string', makeParse(exqs.parse, queryString));
+        pBench.add('qs', makeParse(qs.parse, queryString, { arrayLimit: Infinity, parameterLimit: Infinity }));
 
-parseIndicesBench.add('extended-query-string', () => exqs.parse(indicesQueryString));
-parseIndicesBench.add('qs', () => qs.parse(indicesQueryString));
-//parseIndicesBench.add('query-string', () => QueryString.parse(indicesQueryString, { arrayFormat: 'indices' }));
+        benches.push(sBench, pBench);
+    }
+}
+
+const header = [
+    'Task name', 'Latency avg (ns)', 'Latency med (ns)',
+    'Throughput avg (ops/s)', 'Throughput med (ops/s)',
+    'Samples', 'Error',
+];
+
+/**
+ * @typedef {{ name: string, results: FormattedResult[] }} FormattedResults
+ */
+
+/** @type {FormattedResults[]} */
+const results = [];
 
 for (const bench of benches) {
+    console.log();
+    console.log(bench.name);
     await bench.run();
+
+    const benchResults = getResults(bench);
+
+    const hasError = benchResults.some(res => res.error);
+
+    printTable(
+        makeRows(benchResults, hasError),
+        {
+            header: hasError ? header : header.slice(0, header.length - 1),
+            alignment: '><<<<<>',
+            style: RoundedTableStyle
+        }
+    );
+
+    results.push({ name: bench.name ?? '', results: benchResults });
 }
 
 /**
@@ -159,16 +260,10 @@ function getResults(bench) {
             throughputAvg: ['','',''],
             throughputMed: ['','',''],
             samples: '',
-            error: result.error.stack || String(result.error),
+            error: String(result.error),
         }
     });
 }
-
-const header = [
-    'Task name', 'Latency avg (ns)', 'Latency med (ns)',
-    'Throughput avg (ops/s)', 'Throughput med (ops/s)',
-    'Samples',
-];
 
 /**
  * @param {[string, string, string]} res 
@@ -179,10 +274,26 @@ function joinRes(res) {
 
 /**
  * @param {FormattedResult[]} result 
+ * @param {boolean} hasError
  * @returns {string[][]}
  */
-function makeRows(result) {
-    return result.map(res => [res.name, joinRes(res.latencyAvg), joinRes(res.latencyMed), joinRes(res.throughputAvg), joinRes(res.throughputMed), res.samples]);
+function makeRows(result, hasError) {
+    return result.map(res => {
+        const row = [
+            res.name,
+            joinRes(res.latencyAvg),
+            joinRes(res.latencyMed),
+            joinRes(res.throughputAvg),
+            joinRes(res.throughputMed),
+            res.samples,
+        ];
+
+        if (hasError) {
+            row.push(res.error);
+        }
+
+        return row;
+    });
 }
 
 /** @type {{[char: string]: string}} */
@@ -207,6 +318,8 @@ function escapeHtml(text) {
  * @returns {void}
  */
 function makeHtmlTable(result, buf) {
+    const hasError = result.some(res => res.error);
+
     buf.push(
         '<table>\n',
         '<thead>\n',
@@ -218,6 +331,9 @@ function makeHtmlTable(result, buf) {
     buf.push('<th colspan="3">', escapeHtml(header[3]), '</th>');
     buf.push('<th colspan="3">', escapeHtml(header[4]), '</th>');
     buf.push('<th>', escapeHtml(header[5]), '</th>');
+    if (hasError) {
+        buf.push('<th>', escapeHtml(header[6]), '</th>');
+    }
     buf.push(
         '</tr>\n',
         '</thead>\n',
@@ -229,36 +345,14 @@ function makeHtmlTable(result, buf) {
         for (const cell of [...res.latencyAvg, ...res.latencyMed, ...res.throughputAvg, ...res.throughputMed, res.samples]) {
             buf.push('<td align="right">', escapeHtml(cell.trim().replace(/\xa0\xa0+/g, '\xa0')), '</td>');
         }
+        if (hasError) {
+            buf.push('<td><pre>', escapeHtml(res.error), '</pre></td>');
+        }
         buf.push('</tr>\n');
     }
     buf.push(
         '</tbody>\n',
         '</table>\n'
-    );
-}
-
-/**
- * @typedef {{ name: string, results: FormattedResult[] }} FormattedResults
- */
-
-/** @type {FormattedResults[]} */
-const results = benches.map(bench => ({ name: bench.name ?? '', results: getResults(bench) }));
-
-let first = true;
-for (const result of results) {
-    if (first) {
-        first = false;
-    } else {
-        console.log();
-    }
-    console.log(result.name);
-    printTable(
-        makeRows(result.results),
-        {
-            header,
-            alignment: '><<<<<',
-            style: RoundedTableStyle
-        }
     );
 }
 
