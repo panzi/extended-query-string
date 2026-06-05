@@ -3,7 +3,7 @@ import { inspect } from 'node:util';
 import type { ParsedKey } from '../src/types.js';
 import stringifyKey from '../src/stringifyKey.js';
 
-export type TestCase = {
+type TestCase = {
     input: ParsedKey,
     result?: string,
     error?: unknown|string|RegExp,

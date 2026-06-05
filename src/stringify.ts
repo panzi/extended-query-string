@@ -1,4 +1,4 @@
-import { CircularStructureError, IllegalKeyError } from "./errors.js";
+import { CircularStructureError, IllegalKeyError, MalformedUnicode } from "./errors.js";
 import type { ParsedKey, Query } from "./types.js";
 
 /**
@@ -148,30 +148,48 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
 
             visited.delete(value);
         } else if (value !== undefined) {
-            if (buf.length) {
-                buf.push('&');
-            }
+            const length = buf.length;
 
-            // Inlining is a bit faster in Firefox (6 Mops/s Vs 5 Mops/s) and
-            // insignificantly slower in Brave (3.2 Mops/s Vs 3.1 Mops/s).
-            // See: https://jsbm.dev/LFzC3d9e6CYOQ
-            //
-            // With inlining like this I could add an option to not %-encode
-            // the brackets in the future? Is that something one would want?
-            buf.push(encodeURIComponent(path[0] ?? ''));
-            for (let index = 1; index < path.length; ++index) {
-                const key = path[index];
-                if (key === null) {
-                    buf.push('%5B%5D');
-                } else {
-                    buf.push('%5B', encodeURIComponent(key), '%5D');
+            try {
+                if (length) {
+                    buf.push('&');
                 }
-            }
 
-            if (value === null) {
-                buf.push('=');
-            } else {
-                buf.push('=', encodeURIComponent(String(value)));
+                // Inlining is a bit faster in Firefox (6 Mops/s Vs 5 Mops/s) and
+                // insignificantly slower in Brave (3.2 Mops/s Vs 3.1 Mops/s).
+                // See: https://jsbm.dev/LFzC3d9e6CYOQ
+                //
+                // With inlining like this I could add an option to not %-encode
+                // the brackets in the future? Is that something one would want?
+                buf.push(encodeURIComponent(path[0] ?? ''));
+                for (let index = 1; index < path.length; ++index) {
+                    const key = path[index];
+                    if (key === null) {
+                        buf.push('%5B%5D');
+                    } else {
+                        buf.push('%5B', encodeURIComponent(key), '%5D');
+                    }
+                }
+
+                if (value === null) {
+                    buf.push('=');
+                } else {
+                    buf.push('=', encodeURIComponent(String(value)));
+                }
+            } catch (error) {
+                // encodeURIComponent() may throw URIError for lone UTF-16
+                // surrogate units.
+                if (dropErrors) {
+                    // pop() in a loop is the fastest!
+                    // See: https://jsbm.dev/vGRKA15bP9odA
+                    while (buf.length > length) {
+                        buf.pop();
+                    }
+                } else if (error instanceof URIError) {
+                    throw new MalformedUnicode(path, value, { cause: error });
+                } else {
+                    throw error;
+                }
             }
         }
     }

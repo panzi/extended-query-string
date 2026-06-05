@@ -52,6 +52,21 @@ export class CircularStructureError extends StringifyError {
 }
 
 /**
+ * Thrown by {@link stringify} if there is a malformed sequence of UTF-16 code units.
+ * E.g. a lone UTF-16 surrogate code unit.
+ */
+export class MalformedUnicode extends StringifyError {
+    key: ParsedKey;
+    value: unknown;
+
+    constructor(key: ParsedKey, value: unknown, options?: ErrorOptions) {
+        super(`Malformed unicode at ${_debugKey(key)}=${JSON.stringify(value)}`, options);
+        this.key = key;
+        this.value = value;
+    }
+}
+
+/**
  * Base class for all exceptions thrown by {@link parse} and {@link parseKey}.
  */
 export class ParseError extends ExtendedQueryStringError {}

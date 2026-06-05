@@ -4,7 +4,7 @@ import type { ParsedKey } from '../src/types.js';
 import parseKey from '../src/parseKey.js';
 import { KeySyntaxError } from '../src/errors.js';
 
-export type TestCase = {
+type TestCase = {
     input: string,
     result?: ParsedKey,
     error?: unknown|string|RegExp,
