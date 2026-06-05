@@ -82,20 +82,20 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
     const dropErrors = options?.error === 'drop';
     const arrayIndices = options?.arrayFormat !== 'brackets';
     const plus = options?.plus ?? false;
-    const visited = new WeakMap<object, ParsedKey>();
+    const visited = new WeakMap<object, number>();
     const buf: ParsedKey = [];
 
     function stringify(path: ParsedKey, value: unknown): void {
         if (value && typeof value === 'object') {
-            const otherKey = visited.get(value);
-            if (otherKey !== undefined) {
+            const otherLength = visited.get(value);
+            if (otherLength !== undefined) {
                 if (dropErrors) return;
-                throw new CircularStructureError(path, otherKey);
+                throw new CircularStructureError(path, path.slice(0, otherLength));
             }
 
-            visited.set(value, path.slice());
-
             const lastIndex = path.length;
+            visited.set(value, lastIndex);
+
             path.push(null);
             if (Array.isArray(value)) {
                 if (arrayIndices) {
