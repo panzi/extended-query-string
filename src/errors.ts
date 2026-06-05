@@ -92,6 +92,26 @@ export class RedefinitionError extends ParseError {
     }
 }
 
+/**
+ * Thrown by {@link parse} if an explicit array index is bigger than the length
+ * of the array.
+ * 
+ * This prevents DoS attacks by passing `foo[134217727]=bar` as a query string.
+ */
+export class IllegalIndexError extends ParseError {
+    /**  */
+    key: ParsedKey;
+
+    /** The length the array currently has. */
+    length: number;
+
+    constructor(key: ParsedKey, length: number, options?: ErrorOptions) {
+        super(`The array index in ${_debugKey(key)} exceeds the allowed value of 0 <= index <= ${length}.`, options);
+        this.key = key;
+        this.length = length;
+    }
+}
+
 /** Possibly expected symbols in {@link KeySyntaxError}. */
 export type ExpectedSymbol = '['|']'|'<identifier>';
 

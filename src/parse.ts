@@ -2,6 +2,7 @@ import {
     PercentEncodingError,
     RedefinitionError,
     TypeConflict,
+    IllegalIndexError,
 
     // used in JSDoc
     // @ts-ignore
@@ -59,6 +60,8 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
 
             if (Object.hasOwn(current, subKey)) {
                 current = current[subKey];
+            } else if (subKey > current.length) {
+                throw new IllegalIndexError(path.slice(0, keyIndex), current.length);
             } else {
                 current = current[subKey] = typeof path[keyIndex + 1] !== 'string' ? [] : Object.create(null);
             }
@@ -76,13 +79,13 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
     const subKey = path[path.length - 1];
     if (subKey === null) {
         if (!Array.isArray(current)) {
-            throw new TypeConflict(path.slice(0, path.length - 1), 'array', getTypeName(current));
+            throw new TypeConflict(path, 'array', getTypeName(current));
         }
 
         current.push(value);
     } else if (typeof subKey === 'number') {
         if (!Array.isArray(current)) {
-            throw new TypeConflict(path.slice(0, path.length - 1), 'array', getTypeName(current));
+            throw new TypeConflict(path, 'array', getTypeName(current));
         }
 
         if (Object.hasOwn(current, subKey)) {
@@ -93,11 +96,13 @@ function _parseItem(query: Query, path: ParsedKey, value: string, redefine: 'fir
             if (redefine === 'last') {
                 current[subKey] = value;
             }
+        } else if (subKey > current.length) {
+            throw new IllegalIndexError(path, current.length);
         } else {
             current[subKey] = value;
         }
     } else if (!current || typeof current !== 'object' || Array.isArray(current)) {
-        throw new TypeConflict(path.slice(0, path.length - 1), 'mapping', getTypeName(current));
+        throw new TypeConflict(path, 'mapping', getTypeName(current));
     } else if (Object.hasOwn(current, subKey)) {
         if (redefine === 'error') {
             throw new RedefinitionError(path);
@@ -151,6 +156,10 @@ export type ParseOptions = {
  * @throws {@link RedefinitionError} Thrown if two parameters want to set the same leaf key.
  * @throws {@link PercentEncodingError} Thrown if there is broken %-encoding in any parameter.
  * @throws {@link KeySyntaxError} Thrown if there is an invalid key syntax.
+ * @throws {@link IllegalIndexError} Thrown if an explicit array index is bigger than the length
+ *   of the array.
+ * 
+ *   This prevents DoS attacks by passing `foo[134217727]=bar` as a query string.
  */
 export function parse(queryString: string|Iterable<readonly [string, string|readonly string[]]>, options?: ParseOptions): Query {
     const redefine = options?.redefine ?? 'last';
