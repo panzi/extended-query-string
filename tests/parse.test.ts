@@ -61,6 +61,25 @@ const TEST_CASES: TestGroup[] = [
                 input: [['', '']],
                 result: { '': '' },
             },
+            {
+                input: ' ',
+                result: { ' ': '' },
+            },
+        ]
+    },
+    {
+        name: 'URLSearchParams',
+        tests: [
+            {
+                input: new URLSearchParams('foo=bar&baz=bla&foo=blub'),
+                options: {
+                    redefine: 'last'
+                },
+                result: {
+                    foo: 'blub',
+                    baz: 'bla',
+                }
+            }
         ]
     },
     {
