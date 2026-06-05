@@ -1,27 +1,31 @@
 import { KeySyntaxError } from "./errors.js";
 import type { ParsedKey } from "./types.js";
 
-// RegExp is faster in Firefox and Safari, manual iterating is faster in Brave.
-// /^[0-9]+$/ is faster than /^\d+$/
-// i < text.length is faster than n = text.length; i < n
-// See: https://jsbm.dev/myojw6PWlWS3N
-const INT_PATTERN: { test(text: string): boolean } = (
-    (typeof navigator !== 'undefined' && /\b(Gecko|Safari)\//.test(navigator?.userAgent ?? '')) ||
-    // @ts-ignore
-    (typeof process !== 'undefined' && process?.versions?.bun) ?
-        /^[0-9]+$/ : {
-        test(text: string): boolean {
-            if (!text.length) return false;
-            for (let index = 0; index < text.length; ++ index) {
-                const ch = text.charCodeAt(index);
-                if (ch < 0x30 || ch > 0x39) {
-                    return false;
-                }
-            }
-            return true;
+// This is faster than /^(0|[1-9][0-9]*)$/.test().
+// See: https://jsbm.dev/LujuEBBc9RAlS
+function isIndex(text: string): boolean {
+    if (!text.length) {
+        return false;
+    }
+
+    const ch = text.charCodeAt(0);
+    if (text.length === 1) {
+        return ch >= 0x30 && ch <= 0x39;
+    }
+
+    if (ch < 0x31 || ch > 0x39) {
+        return false;
+    }
+
+    for (let i = 1; i < text.length; ++ i) {
+        const ch = text.charCodeAt(i);
+        if (ch < 0x30 || ch > 0x39) {
+            return false;
         }
     }
-);
+
+    return true;
+}
 
 /**
  * Parse an extended query string key.
@@ -62,12 +66,21 @@ export function parseKey(key: string): ParsedKey {
         closeIndex = newCloseIndex;
 
         const nextKey = key.slice(openIndex + 1, closeIndex);
-        const index = nextKey.indexOf('[');
-        if (index >= 0) {
-            throw new KeySyntaxError(key, openIndex + 1 + index, '<identifier>', '[');
+        const illegalOpenIndex = nextKey.indexOf('[');
+        if (illegalOpenIndex >= 0) {
+            throw new KeySyntaxError(key, openIndex + 1 + illegalOpenIndex, '<identifier>', '[');
         }
 
-        path.push(INT_PATTERN.test(nextKey) ? parseInt(nextKey, 10) : nextKey || null);
+        if (isIndex(nextKey)) {
+            const index = parseInt(nextKey, 10);
+            if (index >= 0xFFFF_FFFF) {
+                path.push(nextKey);
+            } else {
+                path.push(index);
+            }
+        } else {
+            path.push(nextKey || null);
+        }
 
         openIndex = closeIndex + 1;
 

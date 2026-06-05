@@ -163,6 +163,20 @@ const TEST_CASES: TestGroup[] = [
                     }
                 }
             },
+            {
+                input: [
+                    ['foo[4294967295]', 'A'],
+                    ['foo[00]', 'B'],
+                    ['foo[01]', 'C'],
+                ],
+                result: {
+                    foo: {
+                        '4294967295': 'A',
+                        '00': 'B',
+                        '01': 'C',
+                    }
+                }
+            }
         ]
     },
     {
@@ -655,13 +669,19 @@ const TEST_CASES: TestGroup[] = [
                     ['foo[2]', 'B'],
                     ['foo[1]', 'C'],
                 ],
-                error: IllegalIndexError
+                error: IllegalIndexError,
             },
             {
                 input: [
                     ['foo[1]', 'A'],
                 ],
-                error: IllegalIndexError
+                error: IllegalIndexError,
+            },
+            {
+                input: [
+                    ['foo[4294967294]', 'A'],
+                ],
+                error: IllegalIndexError,
             },
             {
                 input: [
