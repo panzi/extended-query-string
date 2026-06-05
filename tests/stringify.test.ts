@@ -174,13 +174,13 @@ const TEST_CASES: TestGroup[] = [
                 input: {
                     '\uDC00': 'x'
                 },
-                error: MalformedUnicode
+                error: MalformedUnicode,
             },
             {
                 input: {
                     'x': '\uD800'
                 },
-                error: MalformedUnicode
+                error: MalformedUnicode,
             },
             {
                 input: {

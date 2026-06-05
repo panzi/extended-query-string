@@ -7,8 +7,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.26%</td><td align="right">62%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">64%</td><td align="right">2617923</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2631579</td><td align="right">± 71124</td><td align="right">100%</td><td align="right">1281477</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.53%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1629671</td><td align="right">± 0.03%</td><td align="right">62%</td><td align="right">1694915</td><td align="right">± 90799</td><td align="right">64%</td><td align="right">795086</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.31%</td><td align="right">59%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">64%</td><td align="right">2643173</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2702703</td><td align="right">± 71124</td><td align="right">100%</td><td align="right">1299830</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 4.81%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1636188</td><td align="right">± 0.03%</td><td align="right">62%</td><td align="right">1724138</td><td align="right">± 94044</td><td align="right">64%</td><td align="right">766663</td></tr>
 </tbody>
 </table>
 
@@ -18,8 +18,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.10%</td><td align="right">32%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">32%</td><td align="right">2721090</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2777778</td><td align="right">± 75075</td><td align="right">100%</td><td align="right">1347168</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.89%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">862128</td><td align="right">± 0.02%</td><td align="right">32%</td><td align="right">877193</td><td align="right">± 15664</td><td align="right">32%</td><td align="right">424636</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.16%</td><td align="right">33%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">32%</td><td align="right">2686954</td><td align="right">± 0.02%</td><td align="right">100%</td><td align="right">2777778</td><td align="right">± 75075</td><td align="right">100%</td><td align="right">1320044</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.88%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">880724</td><td align="right">± 0.02%</td><td align="right">33%</td><td align="right">900901</td><td align="right">± 8190.0</td><td align="right">32%</td><td align="right">433097</td></tr>
 </tbody>
 </table>
 
@@ -29,8 +29,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.22%</td><td align="right">59%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">62%</td><td align="right">2653508</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2702703</td><td align="right">± 75075</td><td align="right">100%</td><td align="right">1301094</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 4.70%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1608473</td><td align="right">± 0.03%</td><td align="right">61%</td><td align="right">1666667</td><td align="right">± 87719</td><td align="right">62%</td><td align="right">762131</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.26%</td><td align="right">58%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">60%</td><td align="right">2690313</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2702703</td><td align="right">± 75075</td><td align="right">100%</td><td align="right">1315677</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.49%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1573420</td><td align="right">± 0.03%</td><td align="right">58%</td><td align="right">1612903</td><td align="right">± 111235</td><td align="right">60%</td><td align="right">768873</td></tr>
 </tbody>
 </table>
 
@@ -40,8 +40,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.29%</td><td align="right">32%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">32%</td><td align="right">2702712</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2702703</td><td align="right">± 75075</td><td align="right">100%</td><td align="right">1335786</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.95%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">863597</td><td align="right">± 0.02%</td><td align="right">32%</td><td align="right">877193</td><td align="right">± 15664</td><td align="right">32%</td><td align="right">425062</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 3.06%</td><td align="right">33%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">32%</td><td align="right">2761802</td><td align="right">± 0.01%</td><td align="right">100%</td><td align="right">2777778</td><td align="right">± 79365</td><td align="right">100%</td><td align="right">1339682</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.53%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">888827</td><td align="right">± 0.02%</td><td align="right">32%</td><td align="right">900901</td><td align="right">± 16530</td><td align="right">32%</td><td align="right">438654</td></tr>
 </tbody>
 </table>
 
@@ -51,8 +51,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.17%</td><td align="right">30%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">30%</td><td align="right">45179</td><td align="right">± 0.05%</td><td align="right">100%</td><td align="right">45434</td><td align="right">± 670.00</td><td align="right">100%</td><td align="right">22495</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.38%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">13690</td><td align="right">± 0.10%</td><td align="right">30%</td><td align="right">13772</td><td align="right">± 130.00</td><td align="right">30%</td><td align="right">6811</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.43%</td><td align="right">31%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">31%</td><td align="right">44311</td><td align="right">± 0.09%</td><td align="right">100%</td><td align="right">44903</td><td align="right">± 773.00</td><td align="right">100%</td><td align="right">21815</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.25%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">13703</td><td align="right">± 0.10%</td><td align="right">31%</td><td align="right">13803</td><td align="right">± 135.00</td><td align="right">31%</td><td align="right">6824</td></tr>
 </tbody>
 </table>
 
@@ -62,8 +62,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.13%</td><td align="right">38%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">38%</td><td align="right">44095</td><td align="right">± 0.04%</td><td align="right">100%</td><td align="right">44346</td><td align="right">± 312.00</td><td align="right">100%</td><td align="right">21990</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.33%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">16692</td><td align="right">± 0.08%</td><td align="right">38%</td><td align="right">16793</td><td align="right">± 106.00</td><td align="right">38%</td><td align="right">8310</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.15%</td><td align="right">36%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">36%</td><td align="right">45048</td><td align="right">± 0.05%</td><td align="right">100%</td><td align="right">45372</td><td align="right">± 374.00</td><td align="right">100%</td><td align="right">22452</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.30%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">16271</td><td align="right">± 0.08%</td><td align="right">36%</td><td align="right">16351</td><td align="right">± 151.00</td><td align="right">36%</td><td align="right">8108</td></tr>
 </tbody>
 </table>
 
@@ -73,8 +73,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.17%</td><td align="right">34%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">34%</td><td align="right">37906</td><td align="right">± 0.06%</td><td align="right">100%</td><td align="right">38168</td><td align="right">± 446.00</td><td align="right">100%</td><td align="right">18884</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.47%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">12971</td><td align="right">± 0.11%</td><td align="right">34%</td><td align="right">13048</td><td align="right">± 125.00</td><td align="right">34%</td><td align="right">6449</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.18%</td><td align="right">34%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">34%</td><td align="right">38036</td><td align="right">± 0.06%</td><td align="right">100%</td><td align="right">38285</td><td align="right">± 435.00</td><td align="right">100%</td><td align="right">18938</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.33%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">12985</td><td align="right">± 0.12%</td><td align="right">34%</td><td align="right">13105</td><td align="right">± 125.00</td><td align="right">34%</td><td align="right">6459</td></tr>
 </tbody>
 </table>
 
@@ -84,8 +84,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.13%</td><td align="right">28%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">29%</td><td align="right">38658</td><td align="right">± 0.04%</td><td align="right">100%</td><td align="right">38895</td><td align="right">± 198.00</td><td align="right">100%</td><td align="right">19285</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.39%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">11018</td><td align="right">± 0.10%</td><td align="right">29%</td><td align="right">11093</td><td align="right">± 61.00</td><td align="right">29%</td><td align="right">5486</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.11%</td><td align="right">30%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">30%</td><td align="right">38322</td><td align="right">± 0.04%</td><td align="right">100%</td><td align="right">38521</td><td align="right">± 209.00</td><td align="right">100%</td><td align="right">19125</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.30%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">11451</td><td align="right">± 0.10%</td><td align="right">30%</td><td align="right">11528</td><td align="right">± 70.00</td><td align="right">30%</td><td align="right">5707</td></tr>
 </tbody>
 </table>
 
@@ -95,8 +95,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.21%</td><td align="right">31%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">31%</td><td align="right">4308</td><td align="right">± 0.15%</td><td align="right">100%</td><td align="right">4345</td><td align="right">± 55.00</td><td align="right">100%</td><td align="right">2151</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.40%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1326</td><td align="right">± 0.31%</td><td align="right">31%</td><td align="right">1338</td><td align="right">± 9.00</td><td align="right">31%</td><td align="right">662</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.17%</td><td align="right">28%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">28%</td><td align="right">4597</td><td align="right">± 0.12%</td><td align="right">100%</td><td align="right">4612</td><td align="right">± 36.00</td><td align="right">100%</td><td align="right">2296</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.44%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1266</td><td align="right">± 0.34%</td><td align="right">28%</td><td align="right">1275</td><td align="right">± 7.00</td><td align="right">28%</td><td align="right">632</td></tr>
 </tbody>
 </table>
 
@@ -106,8 +106,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.20%</td><td align="right">5%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">5%</td><td align="right">2516</td><td align="right">± 0.16%</td><td align="right">100%</td><td align="right">2524</td><td align="right">± 25.00</td><td align="right">100%</td><td align="right">1257</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.30%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">129</td><td align="right">± 0.29%</td><td align="right">5%</td><td align="right">130</td><td align="right">± 1.00</td><td align="right">5%</td><td align="right">65</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.36%</td><td align="right">5%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">5%</td><td align="right">2615</td><td align="right">± 0.22%</td><td align="right">100%</td><td align="right">2624</td><td align="right">± 27.00</td><td align="right">100%</td><td align="right">1305</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.40%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">127</td><td align="right">± 0.38%</td><td align="right">5%</td><td align="right">128</td><td align="right">± 1.00</td><td align="right">5%</td><td align="right">64</td></tr>
 </tbody>
 </table>
 
@@ -117,8 +117,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.23%</td><td align="right">36%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">37%</td><td align="right">3090</td><td align="right">± 0.17%</td><td align="right">100%</td><td align="right">3105</td><td align="right">± 20.00</td><td align="right">100%</td><td align="right">1543</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.58%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1127</td><td align="right">± 0.42%</td><td align="right">36%</td><td align="right">1139</td><td align="right">± 8.00</td><td align="right">37%</td><td align="right">562</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.21%</td><td align="right">35%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">35%</td><td align="right">3064</td><td align="right">± 0.16%</td><td align="right">100%</td><td align="right">3080</td><td align="right">± 21.00</td><td align="right">100%</td><td align="right">1531</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.42%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">1068</td><td align="right">± 0.33%</td><td align="right">35%</td><td align="right">1077</td><td align="right">± 8.00</td><td align="right">35%</td><td align="right">534</td></tr>
 </tbody>
 </table>
 
@@ -128,7 +128,7 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.47%</td><td align="right">2%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">2%</td><td align="right">1954</td><td align="right">± 0.27%</td><td align="right">100%</td><td align="right">1963</td><td align="right">± 10.00</td><td align="right">100%</td><td align="right">974</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.49%</td><td align="right">2%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">2%</td><td align="right">1975</td><td align="right">± 0.29%</td><td align="right">100%</td><td align="right">1984</td><td align="right">± 17.00</td><td align="right">100%</td><td align="right">984</td></tr>
 <tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.18%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">45</td><td align="right">± 0.18%</td><td align="right">2%</td><td align="right">45</td><td align="right">± 0.00</td><td align="right">2%</td><td align="right">64</td></tr>
 </tbody>
 </table>
@@ -139,8 +139,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 2.50%</td><td align="right">53%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">54%</td><td align="right">19</td><td align="right">± 2.57%</td><td align="right">100%</td><td align="right">18</td><td align="right">± 1.00</td><td align="right">100%</td><td align="right">64</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.47%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">10</td><td align="right">± 0.46%</td><td align="right">52%</td><td align="right">10</td><td align="right">± 0.00</td><td align="right">54%</td><td align="right">64</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 2.42%</td><td align="right">51%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">53%</td><td align="right">19</td><td align="right">± 2.49%</td><td align="right">100%</td><td align="right">19</td><td align="right">± 1.00</td><td align="right">100%</td><td align="right">64</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.56%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">10</td><td align="right">± 0.55%</td><td align="right">51%</td><td align="right">10</td><td align="right">± 0.00</td><td align="right">53%</td><td align="right">64</td></tr>
 </tbody>
 </table>
 
@@ -150,8 +150,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 0.87%</td><td align="right">14%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">14%</td><td align="right">28</td><td align="right">± 0.77%</td><td align="right">100%</td><td align="right">28</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">64</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.27%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">4</td><td align="right">± 0.26%</td><td align="right">14%</td><td align="right">4</td><td align="right">± 0.00</td><td align="right">14%</td><td align="right">64</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 1.15%</td><td align="right">14%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">13%</td><td align="right">29</td><td align="right">± 0.95%</td><td align="right">100%</td><td align="right">29</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">64</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.30%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">4</td><td align="right">± 0.29%</td><td align="right">14%</td><td align="right">4</td><td align="right">± 0.00</td><td align="right">13%</td><td align="right">64</td></tr>
 </tbody>
 </table>
 
@@ -161,8 +161,8 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 1.82%</td><td align="right">62%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">62%</td><td align="right">14</td><td align="right">± 1.80%</td><td align="right">100%</td><td align="right">14</td><td align="right">± 1.00</td><td align="right">100%</td><td align="right">64</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.62%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">9</td><td align="right">± 0.59%</td><td align="right">62%</td><td align="right">9</td><td align="right">± 0.00</td><td align="right">62%</td><td align="right">64</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 1.61%</td><td align="right">62%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">62%</td><td align="right">14</td><td align="right">± 1.62%</td><td align="right">100%</td><td align="right">14</td><td align="right">± 1.00</td><td align="right">100%</td><td align="right">64</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.54%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">9</td><td align="right">± 0.52%</td><td align="right">62%</td><td align="right">9</td><td align="right">± 0.00</td><td align="right">62%</td><td align="right">64</td></tr>
 </tbody>
 </table>
 
@@ -172,7 +172,7 @@ micro benchmark
 <tr><th>Task name</th><th colspan="3">Latency avg (ns)</th><th colspan="3">Latency med (ns)</th><th colspan="3">Throughput avg (ops/s)</th><th colspan="3">Throughput med (ops/s)</th><th>Samples</th></tr>
 </thead>
 <tbody>
-<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 1.28%</td><td align="right">17%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">17%</td><td align="right">25</td><td align="right">± 1.03%</td><td align="right">100%</td><td align="right">26</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">64</td></tr>
-<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.69%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">4</td><td align="right">± 0.66%</td><td align="right">17%</td><td align="right">4</td><td align="right">± 0.00</td><td align="right">17%</td><td align="right">64</td></tr>
+<tr><td>extended-query-string</td><td align="right">0.00</td><td align="right">± 1.27%</td><td align="right">16%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">16%</td><td align="right">26</td><td align="right">± 1.04%</td><td align="right">100%</td><td align="right">27</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">64</td></tr>
+<tr><td>qs</td><td align="right">0.00</td><td align="right">± 0.69%</td><td align="right">100%</td><td align="right">0.00</td><td align="right">± 0.00</td><td align="right">100%</td><td align="right">4</td><td align="right">± 0.66%</td><td align="right">16%</td><td align="right">4</td><td align="right">± 0.00</td><td align="right">16%</td><td align="right">64</td></tr>
 </tbody>
 </table>
