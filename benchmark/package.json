@@ -7,7 +7,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "bench": "node ./index.js"
+    "bench": "node --expose-gc ./index.js"
   },
   "dependencies": {
     "@panzi/extended-query-string": "file:..",

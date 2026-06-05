@@ -118,10 +118,15 @@ const benches = [];
 
 const time = 500;
 
+function setup() {
+    // @ts-ignore
+    global.gc?.();
+}
+
 for (const { name, query } of TEST_DATA) {
     for (const arrayFormat of ARRAY_FORMATS) {
-        const sBench = new Bench({ name: `Stringify ${name} (${arrayFormat})`, time, warmup: true });
-        const pBench = new Bench({ name: `Parse ${name} (${arrayFormat})`, time, warmup: true });
+        const sBench = new Bench({ name: `Stringify ${name} (${arrayFormat})`, time, warmup: true, setup });
+        const pBench = new Bench({ name: `Parse ${name} (${arrayFormat})`, time, warmup: true, setup });
 
         sBench.add('extended-query-string', makeStringify(exqs.stringify, query, { arrayFormat }));
         sBench.add('qs', makeStringify(qs.stringify, query, { arrayFormat }));
@@ -151,7 +156,8 @@ const results = [];
 for (const bench of benches) {
     console.log();
     console.log(bench.name);
-    await bench.run();
+
+    bench.runSync();
 
     const benchResults = getResults(bench);
 
