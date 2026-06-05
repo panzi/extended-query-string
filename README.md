@@ -18,6 +18,9 @@ Features, some of which making it different to these:
 * Strict parsing that throws exceptions if there is:
 
   * Illegal syntax in keys
+  * Illegal %-encoding
+  * Illegal array indices: For each new array element the condition
+    `0 <= index <= array.length` must hold.
   * Conflicting types (mapping Vs array)
   * Redefinition of keys
 
@@ -27,16 +30,20 @@ Features, some of which making it different to these:
   * Circular structures
   * Illegal keys (mapping keys containing `[` or `]` or non-top level empty keys)
 
-  Though exceptions can be turned off, simply dropping any broken parameters.
+  Again, exceptions can be turned off, simply dropping any broken parameters.
 * Uses `Object.create(null)` for parsed objects that really only have the
   parsed properties. This alone would already prevent prototype pollution, though
   `Object.hasOwn()` is used anyway.
 * Faster in my very limited [micro-benchmark](benchmark/README.md).
 
+Note that this library doesn't provide limits (`depth`, `parameterLimit`,
+`arrayLimit`) like [qs](https://www.npmjs.com/package/qs#readme) does.
+Instead limit the size of the query string that is accepted.
+
 ### Query String Example
 
 ```TypeScript
-import qs from "extended-query-string";
+import qs from "@panzi/extended-query-string";
 
 console.log(qs.stringify({
   "mapping": {
@@ -55,13 +62,13 @@ console.log(qs.stringify({
 Output:
 
 ```
-mapping%5Bfoo%5D=A&mapping%5Bbar%5D%5Bbaz%5D=B&array%5B%5D=C&array%5B%5D%5B%5D=D
+mapping%5Bfoo%5D=A&mapping%5Bbar%5D%5Bbaz%5D=B&array%5B0%5D=C&array%5B1%5D%5B0%5D=D
 ```
 
 Output without %-encoding for readability:
 
 ```
-mapping[foo]=A&mapping[bar][baz]=B&array[]=C&array[][]=D
+mapping[foo]=A&mapping[bar][baz]=B&array[0]=C&array[1][0]=D
 ```
 
 Syntax
@@ -85,6 +92,8 @@ characters.
 * `foo[bar][baz]`
 * `foo[]`
 * `foo[][]`
+* `foo[0]`
+* `foo[1][0]`
 * `foo bar[][123 $ B_Ä.Z]`
 * `[]` - In this case the key in the top level mapping is the empty string (`""`).
 

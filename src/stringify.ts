@@ -77,6 +77,7 @@ export type StringifyOptions = {
  * @throws {@link CircularStructureError} Thrown if a circular structure is found in `query`.
  * @throws {@link IllegalKeyError} Thrown if there are illegal character in keys (`[` and `]`),
  * empty non-top level keys (`""`).
+ * @throws {@link MalformedUnicode} Thrown if a lone UTF-16 surrogate code unit is found.
  */
 export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, options?: StringifyOptions): string {
     const dropErrors = options?.error === 'drop';
