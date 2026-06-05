@@ -83,7 +83,7 @@ export function stringify(query: Readonly<Query>|ReadonlyMap<string, unknown>, o
     const arrayIndices = options?.arrayFormat !== 'brackets';
     const plus = options?.plus ?? false;
     const visited = new WeakMap<object, number>();
-    const buf: ParsedKey = [];
+    const buf: string[] = [];
 
     function stringify(path: ParsedKey, value: unknown): void {
         if (value && typeof value === 'object') {
