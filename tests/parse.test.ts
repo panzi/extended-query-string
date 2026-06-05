@@ -3,7 +3,11 @@ import { inspect } from 'node:util';
 
 import { ParseOptions, parse } from '../src/parse.js';
 import type { Query } from '../src/types.js';
-import { KeySyntaxError, PercentEncodingError, RedefinitionError, TypeConflict } from '../src/errors.js';
+import {
+    IllegalIndexError, KeySyntaxError,
+    PercentEncodingError, RedefinitionError,
+    TypeConflict,
+} from '../src/errors.js';
 
 export type TestCase = {
     input: string|Iterable<[string, string|string[]]>,
@@ -65,6 +69,26 @@ const TEST_CASES: TestCase[] = [
             foo: 'B',
         },
     },
+
+    // key looking like an index
+    {
+        input: [
+            ['foo[-1]', 'A'],
+            ['foo[0.0]', 'B'],
+            ['foo[+0]', 'C'],
+            ['foo[ 0 ]', 'D'],
+        ],
+        result: {
+            foo: {
+                '-1': 'A',
+                '0.0': 'B',
+                '+0': 'C',
+                ' 0 ': 'D',
+            }
+        }
+    },
+
+    // redefine
     {
         input: 'foo=A&foo=B',
         result: {
@@ -582,6 +606,35 @@ const TEST_CASES: TestCase[] = [
             ]
         },
         options: { redefine: 'error' },
+    },
+
+    // illegal indices
+    {
+        input: [
+            ['foo[0]', 'A'],
+            ['foo[2]', 'B'],
+            ['foo[1]', 'C'],
+        ],
+        error: IllegalIndexError
+    },
+    {
+        input: [
+            ['foo[1]', 'A'],
+        ],
+        error: IllegalIndexError
+    },
+    {
+        input: [
+            ['foo[0]', 'A'],
+            ['foo[2]', 'B'],
+            ['foo[1]', 'C'],
+        ],
+        result: {
+            foo: ['A', 'C']
+        },
+        options: {
+            error: 'drop'
+        }
     },
 ];
 
