@@ -4,7 +4,7 @@ import type { ParsedKey } from "./types.js";
 // This is faster than /^(0|[1-9][0-9]*)$/.test().
 // See: https://jsbm.dev/LujuEBBc9RAlS
 function isIndex(text: string): boolean {
-    if (!text.length) {
+    if (!text.length || text.length > 10) {
         return false;
     }
 
