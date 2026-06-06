@@ -65,21 +65,26 @@ export function parseKey(key: string): ParsedKey {
 
         closeIndex = newCloseIndex;
 
-        const nextKey = key.slice(openIndex + 1, closeIndex);
-        const illegalOpenIndex = nextKey.indexOf('[');
-        if (illegalOpenIndex >= 0) {
-            throw new KeySyntaxError(key, openIndex + 1 + illegalOpenIndex, '<identifier>', '[');
-        }
-
-        if (isIndex(nextKey)) {
-            const index = parseInt(nextKey, 10);
-            if (index >= 0xFFFF_FFFF) {
-                path.push(nextKey);
-            } else {
-                path.push(index);
-            }
+        const startIndex = openIndex + 1;
+        if (startIndex === closeIndex) {
+            path.push(null);
         } else {
-            path.push(nextKey || null);
+            const nextKey = key.slice(startIndex, closeIndex);
+            const illegalOpenIndex = nextKey.indexOf('[');
+            if (illegalOpenIndex >= 0) {
+                throw new KeySyntaxError(key, startIndex + illegalOpenIndex, '<identifier>', '[');
+            }
+
+            if (isIndex(nextKey)) {
+                const index = parseInt(nextKey, 10);
+                if (index >= 0xFFFF_FFFF) {
+                    path.push(nextKey);
+                } else {
+                    path.push(index);
+                }
+            } else {
+                path.push(nextKey);
+            }
         }
 
         openIndex = closeIndex + 1;
